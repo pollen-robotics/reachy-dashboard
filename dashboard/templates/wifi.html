@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="../assets/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link href="../assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/on_off.css">
 </head>
+
+<body onload="displayEverything()"></body>
 
 <body class="">
   <div class="wrapper ">
@@ -59,31 +60,19 @@
 
         <div class="container-fluid">
 
-          {% for item in notifications %}
-            <div class="alert alert-{{ item.level }}">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="material-icons">close</i>
-              </button>
-              <span>{{ item.message }}</span>
-            </div>
-          {% endfor %}
-
           <div class="row">
             <div class="col-md-4">
                 <div class="card card-stats">
-                    <div class="card-header card-header-{{ status.level }} card-header-icon">
+                    <div class="card-header card-header-icon" id="cardLevel">
                     <div class="card-icon">
-                        <i class="material-icons">{{ status.icon }}</i>
+                        <i class="material-icons" id="cardIcon"></i>
                     </div>
-                    <p class="card-category">{{ status.title }}</p>
-                    <h3 class="card-title">{{ status.SSID }}</h3>
+                    <p class="card-category" id="cardTitle"></p>
+                    <h3 class="card-title" id="cardSSID"></h3>
                     </div>
                     <div class="card-footer">
                     <div class="stats">
-                        {% if status.warning %}
-                          <i class="material-icons text-danger">warning</i>
-                        {% endif %}
-                        <a href="javascript:;">{{ status.message }}</a>
+                        <a href="javascript:;" id="cardMessage"></a>
                     </div>
                     </div>
                 </div>
@@ -100,10 +89,7 @@
                           <div class="col-md-12">
                             <div class="form-group">
                               <label class="bmd-label-floating">SSID</label>
-                              <select class="form-control selectpicker" data-style="btn btn-link" name="ssid" required> 
-                                {% for wifi in available_networks %}
-                                  <option>{{ wifi }}</option>
-                                {% endfor %}
+                              <select class="form-control selectpicker" data-style="btn btn-link" name="ssid" id="ssidSelecter" required> 
                               </select>
                             </div>
                           </div>
@@ -112,11 +98,11 @@
                           <div class="col-md-12">
                             <div class="form-group">
                               <label class="bmd-label-floating">Password</label>
-                              <input type="password" class="form-control" name="password" required>
+                              <input type="password" class="form-control" name="password" id="passwordForm" required>
                             </div>
                           </div>
                         </div>                        
-                        <button type="submit" class="btn btn-primary pull-right">Update Config</button>
+                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit">Update Config</button>
                         <div class="clearfix"></div>
                       </form>
                     </div>
@@ -128,9 +114,7 @@
                   <h4 class="card-title">Reachy's IP address</h4>
                 </div>
                 <div class="card-body" id="ipcard">
-                  <p style="text-align: center;">{{ip}}</p>
-                  <form action="/ip" method="POST">
-                  </form>
+                  <p style="text-align: center;" id="ipadress"></p>
                 </div>
               </div>
             </div>      
@@ -140,11 +124,7 @@
               <h3>Hotspot</h3>
               <div class="togglebutton">
                 <label>
-                  {%if status.SSID=='Reachy-AP' %}
-                    <input type="checkbox" id="hotspotSwitch" onchange="switchHotspot(document.getElementById('hotspotSwitch'))" checked>
-                  {%else %}
-                    <input type="checkbox" id="hotspotSwitch" onchange="switchHotspot(document.getElementById('hotspotSwitch'))" unchecked>
-                  {% endif %}
+                    <input type="checkbox" id="hotspotSwitch" onchange="switchHotspot()">
                     <span class="toggle"></span>
                 </label>
               </div>
@@ -161,25 +141,119 @@
   <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
   <script>
-    
-    function switchHotspot(checkboxElem) {
-        const request = new XMLHttpRequest();
-        let state = "";
-        if (checkboxElem.checked) {
-          state = "on";
-        } else {
-          state = "off";
+    function displayIp() {
+      const request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('ipadress').innerHTML = this.response.slice(1,-1);
+      }
+      }
+      request.open("GET", "/api/ip");
+      request.send();
+    }
+
+    function handleOnloadHotspot() {
+      checkboxHotspot = document.getElementById('hotspotSwitch');
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+
+      request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (this.response['mode'] == 'Hotspot') {
+            checkboxHotspot.checked = true;
+          } else {
+            checkboxHotspot.unchecked = true;
+          }
         }
-        request.open("POST", "/api/hotspot")
-        request.send(state);
       }
-  </script>
-  <script>
-    function getHotspotState(statusTitle) {
-      if (statusTitle=='Hotspot') {
-        return true;
+
+      request.open("GET", "/api/wlan_status");
+      request.send();
+    }
+
+    function switchHotspot() {
+      checkboxHotspot = document.getElementById('hotspotSwitch');
+      ssidSelecter = document.getElementById('ssidSelecter');
+      passwordForm = document.getElementById('passwordForm');
+      wifiSubmit = document.getElementById('wifiSubmit');
+
+      const request = new XMLHttpRequest();
+      let state = "";
+      if (checkboxHotspot.checked) {
+        state = "on";
+        disabled_state = true;
+      } else {
+        state = "off";
+        disabled_state = false;
       }
-      return false;
+
+      ssidSelecter.disabled = disabled_state;
+      passwordForm.disabled = disabled_state;
+      wifiSubmit.disabled = disabled_state;
+
+      checkboxHotspot.disabled = true;
+      setTimeout(function(){checkboxHotspot.disabled = false;}, 5000);
+      setTimeout(displayIp, 5000);
+      setTimeout(updateAvailableNetworks, 5000);
+      setTimeout(fillConnectionCard, 5000);
+      request.open("POST", "/api/hotspot");
+      request.send(state);
+      }
+
+    function updateAvailableNetworks() {
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+
+      var ssidSelecter = document.getElementById('ssidSelecter');
+
+      while (ssidSelecter.options.length > 0) {
+        ssidSelecter.remove(0);
+      }
+
+      request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        for (let wifiId in this.response){
+          var wifiOption = document.createElement("option");
+          wifiOption.text = this.response[wifiId];
+          ssidSelecter.add(wifiOption);
+        }
+      }
+      }
+      request.open("GET", "/api/available_networks");
+      request.send();
+    }
+
+    function fillConnectionCard() {
+      var cardLevel = document.getElementById("cardLevel");
+      var cardIcon = document.getElementById("cardIcon");
+      var cardTitle = document.getElementById("cardTitle");
+      var cardSSID = document.getElementById("cardSSID");
+      var cardMessage = document.getElementById("cardMessage");
+
+      const levelClasses = ['card-header-succes', 'card-header-error', 'card-header-warning'];
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+
+      request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        cardLevel.classList.remove(...levelClasses);
+        cardLevel.classList.add(`card-header-${this.response["level"]}`);
+        cardIcon.innerHTML = this.response['icon'];
+        cardTitle.innerHTML = this.response['title'];
+        cardSSID.innerHTML = this.response['SSID'];
+        cardMessage.innerHTML = this.response['message'];
+        }
+      }
+
+      request.open("GET", "/api/connection_card_info");
+      request.send();
+    }
+
+    function displayEverything() {
+      handleOnloadHotspot();
+      displayIp();
+      updateAvailableNetworks();
+      fillConnectionCard();
     }
   </script>
 </body>
