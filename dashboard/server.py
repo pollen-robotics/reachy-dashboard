@@ -1,3 +1,4 @@
+"""Flask server for RAP-2021."""
 import os
 import json
 
@@ -40,6 +41,7 @@ def update_status():
         mimetype='application/json',
     )
 
+
 @app.route('/api/ip')
 def update_ip():
     return Response(
@@ -47,10 +49,11 @@ def update_ip():
         mimetype='application/json',
     )
 
-@app.route('/api/wlan_status')
-def update_wlan_status():
+
+@app.route('/api/connection_status')
+def update_connection_status():
     return Response(
-        response=json.dumps(tools.get_wlan_status()),
+        response=json.dumps(tools.get_connection_status()),
         mimetype='application/json',
     )
 
@@ -67,6 +70,7 @@ def update_available_networks():
         response=json.dumps(tools.get_available_wifis()),
         mimetype='application/json',
     )
+
 
 @app.route('/api/connection_card_info')
 def update_connection_card_info():
