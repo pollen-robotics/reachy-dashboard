@@ -1,6 +1,7 @@
 """Flask server for RAP-2021."""
 import os
 import json
+import time
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
@@ -12,6 +13,11 @@ app.secret_key = os.urandom(24)
 
 @app.route('/update-wifi', methods=['POST'])
 def update_wifi():
+    print(tools.get_connection_status()['mode'])
+    if tools.get_connection_status()['mode'] == 'Hotspot':
+        tools.set_hotspot_state('off')
+        time.sleep(4.0)
+        print(tools.get_available_wifis())
     tools.setup_new_wifi(request.form['ssid'], request.form['password'])
     return redirect(url_for('wifi'))
 
@@ -23,8 +29,14 @@ def index():
 
 @app.route('/wifi')
 def wifi():
+    tools.set_hotspot_state('off')
+    time.sleep(2.0)
+    first_wifi_list = tools.get_available_wifis()
+    if not tools.get_connection_status()['mode'] == 'Wifi':
+        tools.set_hotspot_state('on')
     return render_template(
         'wifi.html',
+        first_wifi_list=first_wifi_list,
     )
 
 

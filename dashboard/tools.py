@@ -61,7 +61,7 @@ def get_connection_card_info():
         info['level'] = 'warning'
         info['icon'] = 'wifi_tethering'
         info['title'] = 'Hotspot'
-        info['message'] = "Reachy's access point is on. Turn it off to connect to wifi."
+        info['message'] = "Reachy's access point is on."
 
     return info
 
@@ -136,10 +136,10 @@ def setup_new_wifi(ssid: str, password: str) -> None:
         ssid:
         password: (in plain text)
     """
-    former_network = get_connection_status()['SSID']
+    former_connection = get_connection_status()
 
-    if former_network == 'Reachy-AP':
+    if former_connection['SSID'] == 'Reachy-AP':
         set_hotspot_state('off')
-    else:
-        run(['nmcli', 'con', 'delete', former_network])
+    elif former_connection['mode'] == 'Wifi' or former_connection['mode'] == 'Ethernet':
+        run(['nmcli', 'con', 'delete', former_connection['SSID']])
     run(['nmcli', '-ask', 'device', 'wifi', 'connect', ssid, 'password', password])

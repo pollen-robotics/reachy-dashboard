@@ -15,7 +15,7 @@
   <link href="../assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
 </head>
 
-<body onload="displayEverything()"></body>
+<body onload="onloadSetup({{ first_wifi_list }})"></body>
 
 <body class="">
   <div class="wrapper ">
@@ -98,11 +98,12 @@
                           <div class="col-md-12">
                             <div class="form-group">
                               <label class="bmd-label-floating">Password</label>
-                              <input type="password" class="form-control" name="password" id="passwordForm" required>
+                              <input type="password" class="form-control" name="password" id="passwordForm" required><br>
+                              <input type="checkbox" onclick="revealPassword()"> Show Password
                             </div>
                           </div>
                         </div>                        
-                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit">Update Config</button>
+                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit" onclick="function() {switchActivationWifiForm(false);setTimeout(switchActivationWifiForm.bind(true, activate), 5000)}">Update Config</button>
                         <div class="clearfix"></div>
                       </form>
                     </div>
@@ -171,33 +172,43 @@
       request.send();
     }
 
-    function switchHotspot() {
-      checkboxHotspot = document.getElementById('hotspotSwitch');
+    function switchActivationWifiForm(activate) {
       ssidSelecter = document.getElementById('ssidSelecter');
       passwordForm = document.getElementById('passwordForm');
       wifiSubmit = document.getElementById('wifiSubmit');
+
+      ssidSelecter.disabled = activate;
+      passwordForm.disabled = activate;
+      wifiSubmit.disabled = activate;
+    }
+
+    function switchHotspot() {
+      checkboxHotspot = document.getElementById('hotspotSwitch');
 
       const request = new XMLHttpRequest();
       let state = "";
       if (checkboxHotspot.checked) {
         state = "on";
-        disabled_state = true;
+        switchActivationWifiForm(activate=true);
       } else {
         state = "off";
-        disabled_state = false;
+        switchActivationWifiForm(activate=false);
       }
-
-      ssidSelecter.disabled = disabled_state;
-      passwordForm.disabled = disabled_state;
-      wifiSubmit.disabled = disabled_state;
 
       checkboxHotspot.disabled = true;
       setTimeout(function(){checkboxHotspot.disabled = false;}, 5000);
-      setTimeout(displayIp, 5000);
-      setTimeout(updateAvailableNetworks, 5000);
-      setTimeout(fillConnectionCard, 5000);
+      setTimeout(updateEverything, 5000);
       request.open("POST", "/api/hotspot");
       request.send(state);
+      }
+
+    function onloadAvailableNetworks(wifi_list) {
+      var ssidSelecter = document.getElementById('ssidSelecter');
+      for (let wifiId in wifi_list){
+        var wifiOption = document.createElement("option");
+        wifiOption.text = wifi_list[wifiId];
+        ssidSelecter.add(wifiOption);
+        }
       }
 
     function updateAvailableNetworks() {
@@ -244,13 +255,28 @@
         cardMessage.innerHTML = this.response['message'];
         }
       }
-
       request.open("GET", "/api/connection_card_info");
       request.send();
     }
 
-    function displayEverything() {
+    function revealPassword() {
+      var passwordForm = document.getElementById('passwordForm');
+      if (passwordForm.type == 'password') {
+        passwordForm.type = 'text';
+      }
+      else {
+        passwordForm.type = 'password';
+      }
+    }
+
+    function onloadSetup(wifi_list) {
       handleOnloadHotspot();
+      displayIp();     
+      onloadAvailableNetworks(wifi_list);
+      fillConnectionCard();
+    }
+
+    function updateEverything() {
       displayIp();
       updateAvailableNetworks();
       fillConnectionCard();
