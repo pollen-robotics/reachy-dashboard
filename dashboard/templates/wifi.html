@@ -15,7 +15,7 @@
   <link href="../assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
 </head>
 
-<body onload="onloadSetup({{ first_wifi_list }})"></body>
+<body onload="onloadSetup({{ wifi_list }})"></body>
 
 <body class="">
   <div class="wrapper ">
@@ -24,12 +24,6 @@
       <div class="logo"><a href="#" class="simple-text logo-normal">Reachy</a></div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/">
-              <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
-            </a>
-          </li>
           <li class="nav-item active">
             <a class="nav-link" href="/wifi">
               <i class="material-icons">wifi</i>
@@ -103,7 +97,7 @@
                             </div>
                           </div>
                         </div>                        
-                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit" onclick="function() {switchActivationWifiForm(false);setTimeout(switchActivationWifiForm.bind(true, activate), 5000)}">Update Config</button>
+                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit" onclick="alert('Wifi updated. Check Reachy new IP adress to access this dashboard.')">Update Config</button>
                         <div class="clearfix"></div>
                       </form>
                     </div>
@@ -189,10 +183,10 @@
       let state = "";
       if (checkboxHotspot.checked) {
         state = "on";
-        switchActivationWifiForm(activate=true);
+        // switchActivationWifiForm(activate=true);
       } else {
         state = "off";
-        switchActivationWifiForm(activate=false);
+        // switchActivationWifiForm(activate=false);
       }
 
       checkboxHotspot.disabled = true;

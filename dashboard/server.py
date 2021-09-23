@@ -10,33 +10,45 @@ import tools
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
 
+first = True
+# wifi_list = tools.get_available_wifis()
+
 
 @app.route('/update-wifi', methods=['POST'])
 def update_wifi():
-    print(tools.get_connection_status()['mode'])
     if tools.get_connection_status()['mode'] == 'Hotspot':
         tools.set_hotspot_state('off')
         time.sleep(4.0)
-        print(tools.get_available_wifis())
     tools.setup_new_wifi(request.form['ssid'], request.form['password'])
     return redirect(url_for('wifi'))
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('wifi'))
 
 
 @app.route('/wifi')
 def wifi():
-    tools.set_hotspot_state('off')
-    time.sleep(2.0)
-    first_wifi_list = tools.get_available_wifis()
-    if not tools.get_connection_status()['mode'] == 'Wifi':
-        tools.set_hotspot_state('on')
+    # global first
+    # if first:
+    #     tools.set_hotspot_state('off')
+    #     time.sleep(0.5)
+    #     first_wifi_list = tools.get_available_wifis()
+    #     tools.set_hotspot_state('on')
+    #     first = False
+    #     return render_template(
+    #         'wifi.html',
+    #         wifi_list=first_wifi_list,
+    #     )
+    global wifi_list
+    if not tools.get_connection_status()['mode'] == 'Hotspot':
+        # global wifi_list
+        wifi_list = tools.get_available_wifis()
+
     return render_template(
         'wifi.html',
-        first_wifi_list=first_wifi_list,
+        wifi_list=wifi_list,
     )
 
 
@@ -56,8 +68,10 @@ def update_status():
 
 @app.route('/api/ip')
 def update_ip():
+    ip = tools.get_ip()
+    ip_display.display_ip(ip)
     return Response(
-        response=json.dumps(tools.get_ip()),
+        response=json.dumps(ip),
         mimetype='application/json',
     )
 
@@ -78,8 +92,13 @@ def toggle_hotspot():
 
 @app.route('/api/available_networks')
 def update_available_networks():
+    if tools.get_connection_status()['mode'] == 'Hotspot':
+        global wifi_list
+        available_networks = wifi_list
+    else:
+        available_networks = tools.get_available_wifis()
     return Response(
-        response=json.dumps(tools.get_available_wifis()),
+        response=json.dumps(available_networks),
         mimetype='application/json',
     )
 
@@ -93,4 +112,12 @@ def update_connection_card_info():
 
 
 if __name__ == '__main__':
+    tools.set_hotspot_state('off')
+    time.sleep(0.5)
+    # global wifi_list
+    wifi_list = tools.get_available_wifis()
+    tools.set_hotspot_state('on')
+    time.sleep(4.0)
+    ip_display = tools.IpDisplay()
+    ip_display.display_ip(tools.get_ip())
     app.run(host='0.0.0.0', port=3972, debug=True)

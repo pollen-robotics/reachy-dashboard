@@ -1,6 +1,7 @@
 """Network tools for RAP-2021."""
 import sys
 import time
+from serial import Serial
 
 from subprocess import check_output, PIPE, Popen, run
 
@@ -49,7 +50,7 @@ def get_connection_card_info():
         info['level'] = 'error'
         info['icon'] = 'signal_wifi_off'
         info['title'] = 'No connection'
-        info['message'] = "No internet connection detected. Reachy's hotspot is off."
+        info['message'] = "Reachy is not connected to any network. Reachy's hotspot is off."
 
     elif wlan_config['mode'] == 'Ethernet':
         info['level'] = 'success'
@@ -106,7 +107,7 @@ def get_ip():
     elif connection_mode == 'None':
         ip = []
     else:
-        ip = stdout[stdout.find('inet ')+5:stdout.find('inet ')+18]
+        ip = stdout[stdout.find('inet ')+5:stdout.find('inet ')+19]
     return ip
 
 
@@ -143,3 +144,17 @@ def setup_new_wifi(ssid: str, password: str) -> None:
     elif former_connection['mode'] == 'Wifi' or former_connection['mode'] == 'Ethernet':
         run(['nmcli', 'con', 'delete', former_connection['SSID']])
     run(['nmcli', '-ask', 'device', 'wifi', 'connect', ssid, 'password', password])
+    time.sleep(2.0)
+
+
+class IpDisplay:
+    def __init__(
+        self,
+        port: str = '/dev/ttyACM0',
+        baudrate: int = 115200,
+        timeout: float = 0.01) -> None:
+
+        self.ser = Serial(port=port, baudrate=baudrate, timeout=timeout)
+
+    def display_ip(self, ip: str):
+        self.ser.write(bytes(ip+'\r\n', 'utf8'))
