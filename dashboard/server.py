@@ -10,9 +10,6 @@ import tools
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
 
-first = True
-# wifi_list = tools.get_available_wifis()
-
 
 @app.route('/update-wifi', methods=['POST'])
 def update_wifi():
@@ -30,18 +27,8 @@ def index():
 
 @app.route('/wifi')
 def wifi():
-    # global first
-    # if first:
-    #     tools.set_hotspot_state('off')
-    #     time.sleep(0.5)
-    #     first_wifi_list = tools.get_available_wifis()
-    #     tools.set_hotspot_state('on')
-    #     first = False
-    #     return render_template(
-    #         'wifi.html',
-    #         wifi_list=first_wifi_list,
-    #     )
     global wifi_list
+    print(wifi_list)
     if not tools.get_connection_status()['mode'] == 'Hotspot':
         # global wifi_list
         wifi_list = tools.get_available_wifis()
@@ -113,9 +100,9 @@ def update_connection_card_info():
 
 if __name__ == '__main__':
     tools.set_hotspot_state('off')
-    time.sleep(0.5)
-    # global wifi_list
+    time.sleep(4.0)
     wifi_list = tools.get_available_wifis()
+    print(wifi_list)
     tools.set_hotspot_state('on')
     time.sleep(4.0)
     ip_display = tools.IpDisplay()
