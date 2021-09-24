@@ -157,4 +157,7 @@ class IpDisplay:
         self.ser = Serial(port=port, baudrate=baudrate, timeout=timeout)
 
     def display_ip(self, ip: str):
-        self.ser.write(bytes(ip+'\r\n', 'utf8'))
+        try:
+            self.ser.write(bytes(ip+'\r\n', 'utf8'))
+        except TypeError:
+            pass

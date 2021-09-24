@@ -156,7 +156,8 @@
         if (this.readyState == 4 && this.status == 200) {
           if (this.response['mode'] == 'Hotspot') {
             checkboxHotspot.checked = true;
-          } else {
+          }
+          else {
             checkboxHotspot.unchecked = true;
           }
         }
@@ -183,10 +184,8 @@
       let state = "";
       if (checkboxHotspot.checked) {
         state = "on";
-        // switchActivationWifiForm(activate=true);
       } else {
         state = "off";
-        // switchActivationWifiForm(activate=false);
       }
 
       checkboxHotspot.disabled = true;
@@ -263,17 +262,38 @@
       }
     }
 
+    function check_if_no_network() {
+      checkboxHotspot = document.getElementById('hotspotSwitch');
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+
+      request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) { 
+          if (this.response['mode'] == 'None') {
+            checkboxHotspot.checked = true;
+            switchHotspot();
+          }
+        }
+      }
+      request.open("GET", "/api/connection_status");
+      request.send();
+    }
+
+
     function onloadSetup(wifi_list) {
       handleOnloadHotspot();
       displayIp();     
       onloadAvailableNetworks(wifi_list);
       fillConnectionCard();
+      check_if_no_network();
+      // document.getElementById('hotspotSwitch').disabled = true;
     }
 
     function updateEverything() {
-      displayIp();
-      updateAvailableNetworks();
       fillConnectionCard();
+      check_if_no_network();
+      updateAvailableNetworks();
+      displayIp();
     }
   </script>
 </body>
