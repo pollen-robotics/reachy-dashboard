@@ -97,7 +97,7 @@
                             </div>
                           </div>
                         </div>                        
-                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit" onclick="alert('Wifi updated. Check Reachy new IP adress to access this dashboard.')">Update Config</button>
+                        <button type="submit" class="btn btn-primary pull-right" id="wifiSubmit" onclick="alert('Wifi updated. Check Reachy new IP adress to access this dashboard. If the IP becomes 10.42.0.1, it means that you entered the wrong wifi password.')">Update Config</button>
                         <div class="clearfix"></div>
                       </form>
                     </div>
@@ -286,7 +286,6 @@
       onloadAvailableNetworks(wifi_list);
       fillConnectionCard();
       check_if_no_network();
-      // document.getElementById('hotspotSwitch').disabled = true;
     }
 
     function updateEverything() {
