@@ -21,9 +21,7 @@ class NetworkTools:
     def display_ip(self, ip: str):
         """Display Reachy's IP address on LCD screen."""
         try:
-            print('writing')
             self.ser_ip_display.write(bytes(ip+'\r\n', 'utf8'))
-            print('wrote')
         except:
             pass
 
