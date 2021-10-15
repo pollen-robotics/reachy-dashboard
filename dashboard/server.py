@@ -100,9 +100,13 @@ def update_connection_card_info():
 if __name__ == '__main__':
     net_tools = tools.NetworkTools()
 
-    net_tools.set_hotspot_state('off')
-    wifi_list = net_tools.get_available_wifis()
-    net_tools.set_hotspot_state('on')
+    if not net_tools.get_connection_status()['mode'] == 'Wifi':
+        net_tools.set_hotspot_state('off')
+        wifi_list = net_tools.get_available_wifis()
+        net_tools.set_hotspot_state('on')
+    
+    else:
+        wifi_list = net_tools.get_available_wifis()
 
     net_tools.display_ip(net_tools.get_ip())
     app.run(host='0.0.0.0', port=3972, debug=True)
