@@ -23,16 +23,18 @@ def identify_model():
         model = config['model']
     return model
 
-def identify_cards():
+def identify_boards():
     with open('~/.boards.yaml') as f:
-        card_config = yaml.load(f, Loader=yaml.FullLoader)
-        if 'boards' not in card_config:
-            required_cards = DEFAULT_CARDS
-        required_cards = card_config['boards']
+        board_config_file = yaml.load(f, Loader=yaml.FullLoader)
+        if 'boards' not in board_config_file:
+            board_config = DEFAULT_CARDS
+        board_config = board_config_file['boards']
 
-    with open(os.path.abspath('..')+'/boards/configs/'+required_cards+'.yaml') as f: 
-        config = yaml.load(f, Loader=yaml.FullLoader) 
-    check_output()    
+    with open(os.path.abspath('..')+'/boards/configs/'+board_config+'.yaml') as f: 
+        required_boards = yaml.load(f, Loader=yaml.FullLoader)
+
+    for board in required_boards:
+        check_output()    
 
 
 def check_missing_motors():
