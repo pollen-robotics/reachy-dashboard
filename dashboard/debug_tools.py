@@ -59,7 +59,7 @@ def get_latest_log_folders():
         if from_datetime_to_str(latest_date) in f:
             return f
 
-def get_required_containers():
+def get_required_containers(empty_values: bool = False):
     required_parts_cards = {}
 
     first_piece_to_part = {
@@ -73,15 +73,17 @@ def get_required_containers():
     config = load_config(config_name=get_reachy_model())
 
     for part in config:
-        required_containers = {
-            part_name: [value.__module__, value.id] for (part_name, value) in part.items() if type(value) not in fan_types
-        }
+        if empty_values:
+            required_containers = []
+        else:
+            required_containers = {
+                part_name: [value.__module__, value.id] for (part_name, value) in part.items() if type(value) not in fan_types
+            }
 
         first_piece = list(part.keys())[0]
         required_parts_cards[first_piece_to_part[first_piece]] = required_containers
 
     return required_parts_cards
-
 
 def get_missing_containers():
     with open(get_latest_log_folders() + '/launch.log') as log_file:
@@ -89,7 +91,11 @@ def get_missing_containers():
 
     missing_container_msg = 'reachy_pyluos_hal.reachy.MissingContainerError'
 
-    missing_msg = [log for log in logs if missing_container_msg in log][0]
+    try:
+        missing_msg = [log for log in logs if missing_container_msg in log][0]
+    except IndexError:
+        return get_required_containers(empty_values=True)
+
     str_dct = missing_msg.split('devices ')[1].split('!')[0]
     dct = ast.literal_eval(str_dct)
     return dct
@@ -118,3 +124,9 @@ def get_missing_containers_names():
 def are_missing_containers():
     all_missing_containers = np.asarray(list(get_missing_containers_names().values())).flatten()
     return not np.array_equal(np.asarray(all_missing_containers).flatten(), np.array([]))
+
+def are_all_containers_missing():
+    # [len([part_name for (part_name, value) in part.items() if type(value) not in fan_types]) for part in config]  
+    # output [9, 9, 3] : combien on est cense avoir de conteneurs pour chaque partie
+    # [len(a[part]) for part in a] ( a = get_missing_containers_names())
+    

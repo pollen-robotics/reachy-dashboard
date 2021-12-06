@@ -6,6 +6,7 @@ import time
 from flask import Flask, request, redirect, url_for, render_template, Response
 
 import tools
+import debug_tools
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -22,7 +23,9 @@ def update_wifi():
 
 @app.route('/')
 def index():
-    return redirect(url_for('wifi'))
+    return render_template(
+        'index.html'
+    )
 
 
 @app.route('/wifi')
@@ -93,6 +96,22 @@ def update_available_networks():
 def update_connection_card_info():
     return Response(
         response=json.dumps(net_tools.get_connection_card_info()),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/missing_containers_names')
+def get_missing_containers_names():
+    return Response(
+        response=json.dumps(debug_tools.get_missing_containers_names()),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/missing_containers_bool')
+def get_missing_containers_bool():
+    return Response(
+        response=json.dumps(debug_tools.are_missing_containers()),
         mimetype='application/json',
     )
 
