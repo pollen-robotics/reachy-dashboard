@@ -59,7 +59,8 @@ def get_latest_log_folders():
         if from_datetime_to_str(latest_date) in f:
             return f
 
-def get_required_containers(empty_values: bool = False):
+
+def get_required_modules(empty_values: bool = False):
     required_parts_cards = {}
 
     first_piece_to_part = {
@@ -74,18 +75,19 @@ def get_required_containers(empty_values: bool = False):
 
     for part in config:
         if empty_values:
-            required_containers = []
+            required_modules = []
         else:
-            required_containers = {
+            required_modules = {
                 part_name: [value.__module__, value.id] for (part_name, value) in part.items() if type(value) not in fan_types
             }
 
         first_piece = list(part.keys())[0]
-        required_parts_cards[first_piece_to_part[first_piece]] = required_containers
+        required_parts_cards[first_piece_to_part[first_piece]] = required_modules
 
     return required_parts_cards
 
-def get_missing_containers():
+
+def get_missing_modules():
     with open(get_latest_log_folders() + '/launch.log') as log_file:
         logs = log_file.readlines()
 
@@ -94,39 +96,44 @@ def get_missing_containers():
     try:
         missing_msg = [log for log in logs if missing_container_msg in log][0]
     except IndexError:
-        return get_required_containers(empty_values=True)
+        return get_required_modules(empty_values=True)
 
     str_dct = missing_msg.split('devices ')[1].split('!')[0]
     dct = ast.literal_eval(str_dct)
     return dct
 
 
-def get_missing_containers_names():
+def get_missing_modules_names():
     missing_names = {}
 
-    required_containers = get_required_containers()
-    missing_containers = get_missing_containers()
+    required_modules = get_required_modules()
+    missing_modules = get_missing_modules()
 
-    for robot_part, miss_cont in list(missing_containers.items()):
+    for robot_part, miss_cont in list(missing_modules.items()):
         list_miss_names = []
 
         if miss_cont:
             for container in miss_cont:
                 miss_value = [list(container.keys())[0], list(container.values())[0]]
 
-                for cont_name, cont_value in required_containers[robot_part].items():
+                for cont_name, cont_value in required_modules[robot_part].items():
                     if cont_value == miss_value:
                         list_miss_names.append(cont_name)
         missing_names[robot_part] = list_miss_names
     return missing_names
 
 
-def are_missing_containers():
-    all_missing_containers = np.asarray(list(get_missing_containers_names().values())).flatten()
-    return not np.array_equal(np.asarray(all_missing_containers).flatten(), np.array([]))
+def are_missing_modules():
+    required_modules = get_required_modules()
+    required_modules_len = [len(required_modules[part]) for part in required_modules]
 
-def are_all_containers_missing():
-    # [len([part_name for (part_name, value) in part.items() if type(value) not in fan_types]) for part in config]  
-    # output [9, 9, 3] : combien on est cense avoir de conteneurs pour chaque partie
-    # [len(a[part]) for part in a] ( a = get_missing_containers_names())
-    
+    missing_modules = get_missing_modules()
+    missing_modules_len = [len(missing_modules[part]) for part in missing_modules]
+
+    if required_modules_len == missing_modules_len:
+        return 'all_missing'
+
+    elif sum(missing_modules_len) != 0:
+        return 'some_missing'
+
+    return 'none_missing'

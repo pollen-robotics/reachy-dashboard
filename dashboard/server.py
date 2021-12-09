@@ -100,18 +100,18 @@ def update_connection_card_info():
     )
 
 
-@app.route('/api/missing_containers_names')
-def get_missing_containers_names():
+@app.route('/api/missing_modules_names')
+def get_missing_modules_names():
     return Response(
-        response=json.dumps(debug_tools.get_missing_containers_names()),
+        response=json.dumps(debug_tools.get_missing_modules_names()),
         mimetype='application/json',
     )
 
 
-@app.route('/api/missing_containers_bool')
-def get_missing_containers_bool():
+@app.route('/api/missing_modules_bool')
+def get_missing_modules_bool():
     return Response(
-        response=json.dumps(debug_tools.are_missing_containers()),
+        response=json.dumps(debug_tools.are_missing_modules()),
         mimetype='application/json',
     )
 
