@@ -1,12 +1,13 @@
 """Flask server for RAP-2021."""
 import os
 import json
-import time
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
-import tools
-import debug_tools
+import tools.network_tools as network_tools
+import tools.debug_tools as debug_tools
+import tools.service_tools as service_tools
+
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -23,9 +24,7 @@ def update_wifi():
 
 @app.route('/')
 def index():
-    return render_template(
-        'index.html'
-    )
+    return render_template('index.html')
 
 
 @app.route('/wifi')
@@ -37,6 +36,11 @@ def wifi():
         'wifi.html',
         wifi_list=wifi_list,
     )
+
+
+@app.route('/service')
+def service():
+    return render_template('service.html')
 
 
 @app.route('/halt')
@@ -116,14 +120,34 @@ def get_missing_modules_bool():
     )
 
 
+@app.route('/api/list_services')
+def list_services():
+    return Response(
+        response=json.dumps(service_tools.list_services()),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/restart_service', methods=['POST'])
+def restart_service():
+    service_tools.restart_service(request.data.decode())
+    return Response(status=200)
+
+
+@app.route('/api/stop_service', methods=['POST'])
+def stop_service():
+    service_tools.stop_service(request.data.decode())
+    return Response(status=200)
+
+
 if __name__ == '__main__':
-    net_tools = tools.NetworkTools()
+    net_tools = network_tools.NetworkTools()
 
     if not net_tools.get_connection_status()['mode'] == 'Wifi':
         net_tools.set_hotspot_state('off')
         wifi_list = net_tools.get_available_wifis()
         net_tools.set_hotspot_state('on')
-    
+
     else:
         wifi_list = net_tools.get_available_wifis()
 
