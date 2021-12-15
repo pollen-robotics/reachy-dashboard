@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <link
       rel="apple-touch-icon"
       sizes="76x76"
@@ -46,6 +47,12 @@
               <a class="nav-link" href="/wifi">
                 <i class="material-icons">wifi</i>
                 <p>WiFi Settings</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/service">
+                <i class="material-icons">info</i>
+                <p>Services</p>
               </a>
             </li>
             <li class="nav-item active-pro ">
@@ -93,6 +100,7 @@
     <script>
       const refreshStatus = () => {
           makeAllCards();
+          alertIfNoModules();
       };
 
       const makeAllCards = () => {
@@ -276,6 +284,17 @@
         }
       }
 
+      const alertIfNoModules = () => {
+        const request = new XMLHttpRequest();
+        request.onload = e => {
+          const missing_modules_bool = JSON.parse(request.response);
+          if (missing_modules_bool == "all_missing") {
+            alert("Each Reachy's module is missing, did you turn the switch in Reachy's back before turning on its computer?");
+          }
+        }
+        request.open("GET", "/api/missing_modules_bool");
+        request.send();
+      }
      window.onload = refreshStatus;
     </script>
 
