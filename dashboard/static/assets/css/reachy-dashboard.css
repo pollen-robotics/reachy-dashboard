@@ -1,0 +1,16 @@
+body {
+    font-family: "Montserrat", sans-serif;
+}
+.bg-pollen-green{
+    background-color: #77BBB9;
+    color: #fff;
+}
+.bg-pollen-dark-blue{
+    background-color: #396581;
+    color: #fff;
+}
+.form-check-input:checked {
+    background-color: #396581;
+    border-color: #396581;
+    border: none;
+}

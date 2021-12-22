@@ -19,12 +19,28 @@ def update_wifi():
         net_tools.set_hotspot_state('off')
 
     net_tools.setup_new_wifi(request.form['ssid'], request.form['password'])
-    return redirect(url_for('wifi'))
+    return redirect(url_for('bootstrap_wifi'))
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/bootstrap')
+def bootstrap():
+    return render_template('bootstrap_index.html')
+
+
+@app.route('/bootstrap-wifi')
+def bootstrap_wifi():
+    global wifi_list
+    if not net_tools.get_connection_status()['mode'] == 'Hotspot':
+        wifi_list = net_tools.get_available_wifis()
+    return render_template(
+        'bootstrap_wifi.html',
+        wifi_list=wifi_list,
+    )
 
 
 @app.route('/wifi')
