@@ -26,23 +26,6 @@ def update_wifi():
 def index():
     return render_template('index.html')
 
-
-@app.route('/bootstrap')
-def bootstrap():
-    return render_template('bootstrap_index.html')
-
-
-@app.route('/bootstrap-wifi')
-def bootstrap_wifi():
-    global wifi_list
-    if not net_tools.get_connection_status()['mode'] == 'Hotspot':
-        wifi_list = net_tools.get_available_wifis()
-    return render_template(
-        'bootstrap_wifi.html',
-        wifi_list=wifi_list,
-    )
-
-
 @app.route('/wifi')
 def wifi():
     global wifi_list
@@ -53,16 +36,15 @@ def wifi():
         wifi_list=wifi_list,
     )
 
+# @app.route('/service')
+# def service():
+#     return render_template('service.html')
 
-@app.route('/service')
-def service():
-    return render_template('service.html')
 
-
-@app.route('/halt')
-def halt():
-    net_tools.halt(delay=5)
-    return render_template('halt.html')
+# @app.route('/halt')
+# def halt():
+#     net_tools.halt(delay=5)
+#     return render_template('halt.html')
 
 
 @app.route('/api/reachy-status')
