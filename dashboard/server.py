@@ -36,9 +36,9 @@ def wifi():
         wifi_list=wifi_list,
     )
 
-# @app.route('/service')
-# def service():
-#     return render_template('service.html')
+@app.route('/service')
+def service():
+    return render_template('service.html')
 
 
 # @app.route('/halt')
