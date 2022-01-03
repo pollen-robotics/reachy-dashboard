@@ -13,19 +13,15 @@ const makeOneServiceCard = (service) => {
 
     const restartButton = document.createElement("button");
     restartButton.className = "btn bg-pollen-dark-blue btn-md mt-1";
-    restartButton.id = "restartButton";
+    restartButton.id = service+"_restartButton";
     restartButton.innerHTML = "Restart";
-    // restartButton.onclick = function(){console.log('Wesh')};
-    // restartButton.addEventListener("click", console.log('Restart'));
-    restartButton.onclick = restartService(service);
+    restartButton.onclick = () => restartService(service);
 
     const stopButton = document.createElement("button");
     stopButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
+    restartButton.id = "stopButton";
     stopButton.innerHTML = "Stop";
-    stopButton.onclick = stopService(service);
-
-    // stopButton.onclick = 'console.log("Stop")';
-    // stopButton.addEventListener("click", console.log('Stop'));
+    stopButton.onclick = () => stopService(service);
 
     cardBody.appendChild(restartButton);
     cardBody.appendChild(stopButton);
@@ -46,26 +42,18 @@ makeAllServiceCards = () => {
     }
     request.open("GET", "/api/list_services");
     request.send();
-  }
+}
 
 stopService = (service) => {
-    const request = new XMLHttpRequest();
-    request.open("POST", "/api/stop_service");
-    request.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-    };
-    request.send(service);
-    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/stop_service", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(service));
 }
 
 restartService = (service) => {
-    const request = new XMLHttpRequest();
-    request.open("POST", "/api/restart_service");
-    console.log('yp');
-    request.onreadystatechange = function() {
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-    };
-    request.send('reachy_sdk_server.service');
-    console.log('restart');
-    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/restart_service", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(service));
 }
