@@ -26,6 +26,7 @@ def update_wifi():
 def index():
     return render_template('index.html')
 
+
 @app.route('/wifi')
 def wifi():
     global wifi_list
@@ -36,23 +37,10 @@ def wifi():
         wifi_list=wifi_list,
     )
 
+
 @app.route('/service')
 def service():
     return render_template('service.html')
-
-
-# @app.route('/halt')
-# def halt():
-#     net_tools.halt(delay=5)
-#     return render_template('halt.html')
-
-
-@app.route('/api/reachy-status')
-def update_status():
-    return Response(
-        response=json.dumps(net_tools.get_reachy_status()),
-        mimetype='application/json',
-    )
 
 
 @app.route('/api/ip')
