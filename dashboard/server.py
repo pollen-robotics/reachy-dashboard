@@ -8,6 +8,7 @@ import tools.network_tools as network_tools
 import tools.debug_tools as debug_tools
 import tools.service_tools as service_tools
 
+import time
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -127,6 +128,9 @@ def stop_service():
 
 
 if __name__ == '__main__':
+
+    time.sleep(10.0)
+
     net_tools = network_tools.NetworkTools()
 
     if not net_tools.get_connection_status()['mode'] == 'Wifi':

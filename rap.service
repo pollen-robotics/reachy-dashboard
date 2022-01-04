@@ -1,0 +1,8 @@
+[Unit]
+Description=Reachy Access Point service
+
+[Service]
+ExecStart=bash /home/pierre/dev/RAP-2021/launcher.bash
+
+[Install]
+WantedBy=default.target
