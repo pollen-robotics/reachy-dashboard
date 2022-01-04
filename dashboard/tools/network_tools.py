@@ -11,7 +11,7 @@ from serial.serialutil import SerialException
 class NetworkTools:
     def __init__(
         self,
-        port: str = '/dev/ttyACM0',
+        port: str = '/dev/adafruit',
         baudrate: int = 115200,
         timeout: float = 0.01) -> None:
 
