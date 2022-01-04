@@ -64,25 +64,21 @@ class NetworkTools:
 
         if wlan_config['mode'] == 'Wifi':
             info['level'] = 'success'
-            info['icon'] = 'wifi'
             info['title'] = 'WiFi'
             info['message'] = 'Connected'
 
         elif wlan_config['mode'] == 'None':
             info['level'] = 'error'
-            info['icon'] = 'signal_wifi_off'
             info['title'] = 'No connection'
             info['message'] = "Reachy is not connected to any network. Reachy's hotspot is off."
 
         elif wlan_config['mode'] == 'Ethernet':
             info['level'] = 'success'
-            info['icon'] = 'settings_ethernet'
             info['title'] = 'Ethernet'
             info['message'] = ''
 
         else:
             info['level'] = 'warning'
-            info['icon'] = 'wifi_tethering'
             info['title'] = 'Hotspot'
             info['message'] = "Reachy's access point is on."
 
