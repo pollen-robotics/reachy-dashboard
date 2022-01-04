@@ -1,189 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link
-      rel="apple-touch-icon"
-      sizes="76x76"
-      href="../assets/img/apple-icon.png"
-    />
-    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Reachy Dashboard</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
-    <!--     Fonts and icons     -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../assets/css/material-icons.css"
-    />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" />
-    <!-- CSS Files -->
-    <link
-      href="../assets/css/material-dashboard.css?v=2.1.2"
-      rel="stylesheet"
-    />
-  </head>
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;500;700&family=Montserrat:wght@200;300;400;500;600&display=swap">
+  <title>Reachy Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <body class="">
-    <div class="wrapper ">
-      <div class="sidebar" data-color="purple" data-background-color="white">
-        <div class="logo">
-          <a href="#" class="simple-text logo-normal">Reachy</a>
+  <!-- Bootstrap 5 css and js -->
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- custom CSS file -->
+  <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
+  <!-- custom js scripts -->
+  <script src="../assets/js/material-dashboard-reachy.js"></script>
+</head>
+
+<body onload="refreshStatus()"></body>
+
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+        <img src="../assets/img/logo.jpg" style="width:40px;" class="rounded-pill">
+    </a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="/">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/service">Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/wifi">Wifi</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-center" id="reachyPartCards">
+</div>
+
+<div class="d-none">
+  <div class="alert alert-warning mt-1" id="alertNoMotor">
+    Check Reachy's documentation to learn how to <a href="https://docs.pollen-robotics.com/help/system/reconnect-motor/" target="_blank" class="alert-link">reconnect a motor.</a>
+  </div>
+  <div class="alert alert-warning mt-5" id="alertNoSensor">
+    Check Reachy's documentation to learn how to <a href="https://docs.pollen-robotics.com/help/system/reconnect-load-sensor/" target="_blank" class="alert-link">reconnect a force sensor.</a>
+  </div >
+</div>
+
+<div class="row" id="alertDisplayer"></div>
+
+
+<div class="modal" id="modalNoModules">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">No module detected</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="sidebar-wrapper">
-          <ul class="nav">
-            <li class="nav-item active  ">
-              <a class="nav-link" href="/">
-                <i class="material-icons">dashboard</i>
-                <p>Dashboard</p>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="/wifi">
-                <i class="material-icons">wifi</i>
-                <p>WiFi Settings</p>
-              </a>
-            </li>
-            <li class="nav-item active-pro ">
-              <a class="nav-link" href="/halt">
-                <i class="material-icons">power_setting_new</i>
-                <p>Halt</p>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="main-panel">
-        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
-          <div class="container-fluid">
-            <div class="navbar-wrapper">
-              <h1>Reachy Status</h1>
-            </div>
-            <div class="collapse navbar-collapse justify-content-end">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" onclick="refreshStatus()">
-                    Refresh
-                    <i class="material-icons">refresh</i>
-                    <p class="d-lg-none d-md-block">
-                      Stats
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-
-        <div class="content">
-          <div class="container-fluid">
-            <div class="row" id="reachyParts"></div>
-          </div>
+        <div class="modal-body">
+          Each Reachy's module is missing, did you turn the switch in Reachy's back before turning on its computer?
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-
-    <script>
-      const refreshStatus = () => {
-        const partsElement = document.getElementById("reachyParts");
-        partsElement.innerHTML = "";
-        const waitTitle = document.createElement("h3");
-        waitTitle.innerHTML = "Please wait a few seconds while we scan your robot...";
-        const waitDetails = document.createElement("p");
-        waitDetails.innerHTML = "Make sure to stop all other connected program to your robot before trying to get its status.";
-        partsElement.appendChild(waitTitle);
-        partsElement.appendChild(waitDetails);
-
-        const request = new XMLHttpRequest();
-        request.onload = e => {
-          const status = JSON.parse(request.response).status;
-
-          if (Object.keys(status).length === 0) {
-            partsElement.innerHTML = "No USB found. Check the connection and try again!";
-          }
-          else {
-            partsElement.innerHTML = "";
-
-            for (const partName in status) {
-              const part = status[partName];
-
-              if (part.status != "missing") {
-                partsElement.appendChild(makeCardForPart(part)); 
-              }
-            }
-          }
-        };
-        request.open("GET", "/api/reachy-status");
-        request.send();
-      };
-
-      const makeCardForPart = (part) => {
-        const iconName = {"ok": "check_circle", "problem": "highlight_off"}[part.status];
-        const level = {"ok": "success", "problem": "danger"}[part.status];
-
-        const card = document.createElement("div"); 
-        card.className = "card card-stats";
-
-        const cardHeader = document.createElement("div");
-        cardHeader.className = `card-header card-header-${level} card-header-icon`;
-        const cardIcon = document.createElement("div");
-        cardIcon.className = "card-icon";
-        const iconEl = document.createElement("i");
-        iconEl.className = "material-icons";
-        iconEl.innerHTML = iconName;
-        cardIcon.appendChild(iconEl);
-        const cardTitle = document.createElement("p");
-        cardTitle.className = "card-category";
-        cardTitle.innerHTML = "Reachy part";
-        const cardName = document.createElement("h3");
-        cardName.className = "card-title";
-        cardName.innerHTML = prettyName(part["part_name"]);
-        cardHeader.appendChild(cardIcon);
-        cardHeader.appendChild(cardTitle);
-        cardHeader.appendChild(cardName);
-        card.appendChild(cardHeader);  
-
-        const cardFooter = document.createElement("div");
-        cardFooter.className = "card-footer";
-        const stats = document.createElement("div");
-        stats.className = "stats";
-        if (level == "danger") {
-          const statsIcon = document.createElement("i");
-          statsIcon.className = "material-icons text-danger";
-          statsIcon.innerHTML = "warning";
-          stats.appendChild(statsIcon);
-        }
-        const statsTxt = document.createElement("a");
-        statsTxt.innerHTML = part.details;
-        stats.appendChild(statsTxt);
-        cardFooter.appendChild(stats);
-        card.appendChild(cardFooter); 
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "col-md-4";
-        wrapper.appendChild(card);
-
-        return wrapper;
-      };
-      const prettyName = (str) => {
-        const splitStr = str.toLowerCase().split('_');
-        for (var i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-        }
-        return splitStr.join(' '); 
-     }
-     window.onload = refreshStatus;
-    </script>
-  </body>
+</body>
 </html>
