@@ -17,12 +17,9 @@ while True:
 
     if supervisor.runtime.serial_bytes_available:
         value = input().strip()
-        #print(value)
         if not value:
             continue
-        print('yep')
         ip = value.split('.')
-        print(ip)
         oled.text(ip[0]+'.'+ip[1]+'.', 0, 0, 1, size=2)
         oled.text(ip[2]+'.'+ip[3], 0, 16, 1, size=2)
 
