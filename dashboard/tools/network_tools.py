@@ -5,6 +5,8 @@ from serial import Serial
 
 from subprocess import CalledProcessError, check_output, PIPE, Popen, run
 
+from serial.serialutil import SerialException
+
 
 class NetworkTools:
     def __init__(
@@ -15,7 +17,9 @@ class NetworkTools:
 
         try:
             self.ser_ip_display = Serial(port=port, baudrate=baudrate, timeout=timeout)
-        except:
+            print(f'Connected to ip displayer board on {port}')
+        except SerialException:
+            print(f'Could not connect to ip displayer board on {port}')
             pass
 
     def display_ip(self, ip: str):
