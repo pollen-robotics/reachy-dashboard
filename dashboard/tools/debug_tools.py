@@ -4,6 +4,8 @@ from os import path
 import ast
 from datetime import datetime
 
+from subprocess import CalledProcessError, check_output
+
 import reachy_pyluos_hal
 from reachy_pyluos_hal.config import load_config
 
@@ -87,6 +89,11 @@ def get_required_modules(empty_values: bool = False):
 
 
 def get_missing_modules():
+    ros_topic_list = check_output(['ros2', 'topic', 'list']).decode().strip().split()
+
+    if len(ros_topic_list) <= 2:
+        return get_required_modules(empty_values=False)
+
     with open(get_latest_log_folders() + '/launch.log') as log_file:
         logs = log_file.readlines()
 
@@ -115,9 +122,9 @@ def get_missing_modules_names():
             for container in miss_cont:
                 miss_value = [list(container.keys())[0], list(container.values())[0]]
 
-                for cont_name, cont_value in required_modules[robot_part].items():
-                    if cont_value == miss_value:
-                        list_miss_names.append(cont_name)
+                for key_req, val_req in required_modules[robot_part].items():
+                    if val_req == miss_value:
+                        list_miss_names.append(key_req)
         missing_names[robot_part] = list_miss_names
     return missing_names
 
