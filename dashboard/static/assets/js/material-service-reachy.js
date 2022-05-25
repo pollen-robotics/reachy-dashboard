@@ -30,9 +30,15 @@ const makeOneServiceCard = (service) => {
 
     const stopButton = document.createElement("button");
     stopButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
-    restartButton.id = "stopButton";
+    stopButton.id = service+"_stopButton";
     stopButton.innerHTML = "Stop";
     stopButton.onclick = () => stopService(service);
+
+    const logButton = document.createElement("button");
+    logButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
+    logButton.id = service+"_logButton";
+    logButton.innerHTML = "Show logs";
+    logButton.onclick = () => getServiceStatus(service);
 
     const cardFooter = document.createElement("div");
     cardFooter.className = "card-footer text-center";
@@ -42,6 +48,7 @@ const makeOneServiceCard = (service) => {
 
     cardBody.appendChild(restartButton);
     cardBody.appendChild(stopButton);
+    cardBody.appendChild(logButton);
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
@@ -64,6 +71,7 @@ makeAllServiceCards = () => {
 }
 
 stopService = (service) => {
+    clearLog();
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/stop_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -72,6 +80,7 @@ stopService = (service) => {
 }
 
 restartService = (service) => {
+    clearLog();
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/restart_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -98,4 +107,22 @@ setFooterStatus = (service) => {
 
       }
     xhr.send(JSON.stringify(service));
+}
+
+getServiceStatus = (service) => {
+    const request = new XMLHttpRequest();
+    request.onload = e => {
+        const displayer = document.getElementById("logId");
+        displayer.innerHTML = "<pre>" + request.response + "</pre>";
+        document.getElementById("clearLogId").hidden = false;
+    }
+    request.open("POST", "/api/status_service", true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(service));
+}
+
+clearLog = () => {
+    const displayer = document.getElementById("logId");
+    displayer.innerHTML = "";
+    document.getElementById("clearLogId").hidden = true;
 }

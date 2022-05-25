@@ -26,3 +26,7 @@ def is_service_running(service: str):
     if status[0] == 'active':
         return 'running'
     return 'stopped'
+
+
+def get_service_status(service: str):
+    return run([f'systemctl --user status {service}.service'], stdout=PIPE, shell=True).stdout

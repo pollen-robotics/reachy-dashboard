@@ -134,6 +134,10 @@ def is_service_running():
         mimetype='application/json',
     )
 
+@app.route('/api/status_service', methods=['POST'])
+def status_service():
+    return service_tools.get_service_status(request.data.decode())
+
 
 if __name__ == '__main__':
 
