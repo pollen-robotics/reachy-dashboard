@@ -4,9 +4,20 @@ const makeOneServiceCard = (service) => {
     const card = document.createElement("div");
     card.className = "card col-sm-4 my-3";
 
-    const cardHeader = document.createElement("h5");
+    var cardHeader = document.createElement("h5");
     cardHeader.className = "card-header text-center";
     cardHeader.innerHTML = service;
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("id", "headerSvg_"+service)
+    svg.setAttribute("height",16);
+    svg.setAttribute("width",16);
+    document.body.appendChild(svg);
+    var circles = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circles.setAttribute("cx",10);
+    circles.setAttribute("cy",7);
+    circles.setAttribute("r",6);
+    svg.appendChild(circles);
+    cardHeader.appendChild(svg);
 
     const cardBody = document.createElement("div");
     cardBody.className = "card-body text-center";
@@ -23,13 +34,21 @@ const makeOneServiceCard = (service) => {
     stopButton.innerHTML = "Stop";
     stopButton.onclick = () => stopService(service);
 
+    const cardFooter = document.createElement("div");
+    cardFooter.className = "card-footer text-center";
+    const footerText = document.createElement("i");
+    footerText.id = "footerStatus-"+service;
+    cardFooter.appendChild(footerText);
+
     cardBody.appendChild(restartButton);
     cardBody.appendChild(stopButton);
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
+    card.appendChild(cardFooter);
 
     displayer.appendChild(card);
+    setFooterStatus(service);
 }
 
 makeAllServiceCards = () => {
@@ -49,11 +68,34 @@ stopService = (service) => {
     xhr.open("POST", "/api/stop_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
+    setFooterStatus(service);
 }
 
 restartService = (service) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/restart_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(service));
+    setFooterStatus(service);
+}
+
+setFooterStatus = (service) => {
+    const footer = document.getElementById("footerStatus-"+service);
+    const headerSvg = document.getElementById("headerSvg_"+service);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/is_service_running", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = e => {
+        const serviceStatus = JSON.parse(xhr.response);
+        console.log(serviceStatus);
+        footer.innerHTML = serviceStatus;
+        if (serviceStatus == 'running') {
+            headerSvg.setAttribute("fill", "#c14949");
+        }
+        else {
+            headerSvg.setAttribute("fill", "");
+        }
+
+      }
     xhr.send(JSON.stringify(service));
 }

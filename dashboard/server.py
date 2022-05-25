@@ -20,7 +20,7 @@ def update_wifi():
         net_tools.set_hotspot_state('off')
 
     net_tools.setup_new_wifi(request.form['ssid'], request.form['password'])
-    return redirect(url_for('bootstrap_wifi'))
+    return redirect(url_for('wifi'))
 
 
 @app.route('/')
@@ -127,13 +127,23 @@ def stop_service():
     return Response(status=200)
 
 
+@app.route('/api/is_service_running', methods=['POST'])
+def is_service_running():
+    return Response(
+        response=json.dumps(service_tools.is_service_running(request.data.decode())),
+        mimetype='application/json',
+    )
+
+
 if __name__ == '__main__':
 
-    time.sleep(10.0)
+    # time.sleep(10.0)
 
     net_tools = network_tools.NetworkTools()
 
-    if not net_tools.get_connection_status()['mode'] == 'Wifi':
+    connection_status = net_tools.get_connection_status()['mode']
+
+    if not (connection_status == 'Wifi' or connection_status == 'Ethernet'):
         net_tools.set_hotspot_state('off')
         wifi_list = net_tools.get_available_wifis()
         net_tools.set_hotspot_state('on')
