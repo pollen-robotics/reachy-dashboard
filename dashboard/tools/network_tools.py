@@ -11,8 +11,8 @@ from serial.serialutil import SerialException
 class NetworkTools:
     def __init__(
         self,
-        port: str = '/dev/adafruit',
-        baudrate: int = 115200,
+        port: str = '/dev/arduino',
+        baudrate: int = 9600,
         timeout: float = 0.01) -> None:
 
         try:
@@ -25,7 +25,7 @@ class NetworkTools:
     def display_ip(self, ip: str):
         """Display Reachy's IP address on LCD screen."""
         try:
-            self.ser_ip_display.write(bytes(ip+'\r\n', 'utf8'))
+            self.ser_ip_display.write(bytes('<'+ip+'>\n', 'utf8'))
         except:
             pass
 
@@ -119,19 +119,19 @@ class NetworkTools:
 
     def get_ip(self):
         """Return ip address."""
-        process = Popen(['ifconfig'], stdout=PIPE, stderr=PIPE)
-        stdout, _ = process.communicate()
-        stdout = stdout.decode().split('wlp0s20f3')[-1]
-
         connection_mode = self.get_connection_status()['mode']
 
-        if connection_mode == 'Hotspot':
-            ip = stdout[stdout.find('inet ')+5:stdout.find('inet ')+15]
-        elif connection_mode == 'None':
-            ip = []
-        else:
-            ip = stdout[stdout.find('inet ')+5:stdout.find('inet ')+19]
-        return ip
+        process = Popen(['ifconfig'], stdout=PIPE, stderr=PIPE)
+        stdout, _ = process.communicate()
+        stdout = [part for part in stdout.decode().split()]
+
+        ip_dic = {
+            'Hotspot': '10.42.0.1',
+            'None': [],
+            'Wifi': stdout[[i for (i, p) in enumerate(stdout) if p == 'wlp0s20f3:'][0]+5],
+            'Ethernet': stdout[5]
+        }
+        return ip_dic[connection_mode]
 
     def halt(self, delay: int):
         """Halt NUC computer."""
@@ -146,7 +146,7 @@ class NetworkTools:
         """
         cmd = {'on': 'up', 'off': 'down'}
         run(['nmcli', 'con', cmd[state], 'Reachy-AP'])
-        time.sleep(4.0)
+        time.sleep(5.0)
         self.display_ip(self.get_ip())
 
     def setup_new_wifi(self, ssid: str, password: str) -> None:
