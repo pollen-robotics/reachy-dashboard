@@ -175,6 +175,15 @@ def change_compliance():
     return Response(status=200)
 
 
+@app.route('/api/get-compliance-config')
+def get_compliance_config():
+    config = list(reachy_dashboard._compliance_config.keys())
+    return Response(
+        response=json.dumps(config),
+        mimetype='application/json',
+    )
+
+
 @app.route('/api/get-fans-info')
 def get_fans_info():
     return Response(

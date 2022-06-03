@@ -50,3 +50,28 @@ function changeCompliance(compliance) {
     request.open('GET', '/api/change-compliance?part=' + selectedPart + '&compliance=' + compliance, true);
     request.send();  
 }
+
+function fillPartSelecter() {
+    console.log('Yo');
+    let partSelecter = document.getElementById('partSelecter');
+
+    const request = new XMLHttpRequest();
+    request.responseType = "json";
+
+    while (partSelecter.options.length > 0) {
+      partSelecter.remove(0);
+    }
+
+    request.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log('Hey');
+      for (const [key, value] of Object.entries(this.response)){
+        var partOption = document.createElement("option");
+        partOption.text = value;
+        partSelecter.add(partOption);
+      }
+    }
+    }
+    request.open("GET", "/api/get-compliance-config");
+    request.send();  
+}

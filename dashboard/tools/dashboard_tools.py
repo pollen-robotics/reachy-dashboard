@@ -14,6 +14,24 @@ from reachy_sdk.joint import Joint
 from reachy_sdk.arm import LeftArm, RightArm
 
 
+part_to_joints = {
+    'Left arm': [
+        'l_shoulder_pitch', 'l_shoulder_roll', 'l_arm_yaw',
+        'l_elbow_pitch', 'l_forearm_yaw', 'l_wrist_pitch',
+        'l_wrist_roll', 'l_gripper',
+    ],
+    'Right arm': [
+        'r_shoulder_pitch', 'r_shoulder_roll', 'r_arm_yaw',
+        'r_elbow_pitch', 'r_forearm_yaw', 'r_wrist_pitch',
+        'r_wrist_roll', 'r_gripper',
+    ],
+    'Head': [
+        'l_antenna', 'r_antenna', 'neck_roll',
+        'neck_pitch', 'neck_yaw',
+    ],
+}
+
+
 class ReachyDashboard:
     def __init__(self, host: str = 'localhost', sdk_port: int = 50055) -> None:
         self._host = host
@@ -21,24 +39,9 @@ class ReachyDashboard:
         self._fans: Dict[str, Fan] = {}
         self._joint_names = []
         self.connection_succeed = True
-        self.part_in_reachy = []
+        self._parts = []
 
-        self._joint_to_part = {
-            'Left arm': [
-                'l_shoulder_pitch', 'l_shoulder_roll', 'l_arm_yaw',
-                'l_elbow_pitch', 'l_forearm_yaw', 'l_wrist_pitch',
-                'l_wrist_roll', 'l_gripper',
-            ],
-            'Right arm': [
-                'r_shoulder_pitch', 'r_shoulder_roll', 'r_arm_yaw',
-                'r_elbow_pitch', 'r_forearm_yaw', 'r_wrist_pitch',
-                'r_wrist_roll', 'r_gripper',
-            ],
-            'Head': [
-                'l_antenna', 'r_antenna', 'neck_roll',
-                'neck_pitch', 'neck_yaw',
-            ],
-        }
+        self.joints = {}
 
         try:
             self._grpc_channel = grpc.insecure_channel(f'{self._host}:{self._sdk_port}')
@@ -65,23 +68,21 @@ class ReachyDashboard:
         self.joint_names = joint_ids.names
 
         if 'l_shoulder_pitch' in self.joint_names:
-            self.part_in_reachy.append('Left arm')
+            self._parts.append('Left arm')
 
         if 'r_shoulder_pitch' in self.joint_names:
-            self.part_in_reachy.append('Right arm')
+            self._parts.append('Right arm')
 
         if 'l_antenna' in self.joint_names:
-            self.part_in_reachy.append('Head')
+            self._parts.append('Head')
+
+        for part in self._parts:
+            self.joints[part] = part_to_joints[part]
+
+        self._set_part_compliance_config()
 
     def change_compliancy(self, part: str, compliance: bool):
-        req_part_to_actual_part = {
-            'Robot': ['Left arm', 'Right arm', 'Head'],
-            'Left arm': ['Left arm'],
-            'Right arm': ['Right arm'],
-            'Both arms': ['Left arm', 'Right arm'],
-            'Head': ['Head']
-        }
-        all_req_joints = [self._joint_to_part[p] for p in req_part_to_actual_part[part]]
+        all_req_joints = [self.joints[p] for p in self._compliance_config[part]]
         flat_joint_list = [joint for p in all_req_joints for joint in p]
         cmd_msg = JointsCommand(
             commands=[self._build_compliance_cmd_msg(joint, compliance) for joint in flat_joint_list]
@@ -94,6 +95,18 @@ class ReachyDashboard:
             compliant=BoolValue(value=compliance),
             )
         return msg
+
+    def _set_part_compliance_config(self):
+        self._compliance_config = {}
+
+        for part in self._parts:
+            self._compliance_config[part] = [part]
+
+        if len(self._parts) > 1:
+            self._compliance_config['Robot'] = self._parts
+
+        if 'Left arm' and 'Right arm' in self._parts:
+            self._compliance_config['Both arms'] = ['Left arm', 'Right arm']
 
     def get_fans_info(self):
         fans_info = {}
@@ -112,40 +125,3 @@ class ReachyDashboard:
 
     def __exit__(self):
         self._grpc_channel.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-# from reachy_sdk import ReachySDK
-# from grpc._channel import _InactiveRpcError
-
-
-# class ReachyDashboard:
-#     def __init__(self) -> None:
-#         self.connection_succeed = True
-#         try:
-#             self.reachy = ReachySDK(host='localhost')
-#         except _InactiveRpcError:
-#             self.connection_succeed = False
-
-#     def change_compliance(self, part, state):
-#         part_request_to_real_part = {
-#             'Robot': ['reachy'],
-#             'Left arm': ['l_arm'],
-#             'Right arm': ['r_arm'],
-#             'Head': ['head'],
-#             'Both arms': ['l_arm', 'r_arm'],
-#         }
-#         turn_on = getattr(self.reachy, 'turn_on')
-#         parts = part_request_to_real_part[part]
-#         for part in parts:
-#             turn_on(part)

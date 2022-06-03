@@ -41,7 +41,8 @@
 
 <div class="container mt-5">
     <div class="row">
-        <h3>Temperatures and positions</h3>    
+        <h3>Temperatures and positions</h3>
+
     </div>
     <div class="row">
         <h3>Sensors</h3>
@@ -51,11 +52,6 @@
         <a>Select a robot part to change its compliance</a>
         <div class="col-sm-6 text-center">
           <select class="form-select form-select-sm" aria-label="Default select example" name="part" id="partSelecter">
-              <option value="Robot">Robot</option>
-              <option value="Left arm">Left arm</option>
-              <option value="Right arm">Right arm</option>
-              <option value="Head">Head</option>
-              <option value="Both arms">Both arms</option>
           </select>
         </div>
         <div class="row mt-2">
@@ -82,6 +78,7 @@
 <script>
   function onloadSetup() {
     updateAvailableFans();
+    fillPartSelecter();
   }
 </script>
 
