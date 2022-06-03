@@ -75,3 +75,79 @@ function fillPartSelecter() {
     request.open("GET", "/api/get-compliance-config");
     request.send();  
 }
+
+function createStateCards() {
+  let cardHolder = document.getElementById("jointCardsHolder");
+
+  const request = new XMLHttpRequest();
+  request.responseType = "json";
+
+  request.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    for (const [key, value] of Object.entries(this.response)){
+      card = createStateCard(key, value);
+      cardHolder.appendChild(card);
+    }
+  }
+  }
+  request.open("GET", "/api/get-temperatures");
+  request.send();
+}
+
+function createStateCard(part, jointsState) {
+  let col = document.createElement("div");
+  col.className = "col-sm";
+
+  let card = document.createElement("div");
+  card.className = "card text-center";
+
+  let cardHeader = document.createElement("div");
+  cardHeader.className = "card-header";
+  cardHeader.innerHTML = part;
+
+  let cardBody = document.createElement("div");
+  cardBody.className = "card-body";
+
+  let table = createTable(jointsState);
+
+  cardBody.appendChild(table);
+  card.appendChild(cardHeader);
+  card.appendChild(cardBody);
+  col.appendChild(card);
+  return card
+}
+
+function createTable(jointsState) {
+  let table = document.createElement("table");
+  table.style = "width:100%";
+
+  let row = document.createElement("tr");
+  let th = document.createElement("th");
+  let thP = document.createElement("th");
+  let thT = document.createElement("th");
+
+  thP.innerHTML = "Position";
+  thT.innerHTML = "Temperature";
+
+  row.appendChild(th);
+  row.appendChild(thP);
+  row.appendChild(thT);
+  table.appendChild(row);
+
+  for (const [jointName, state] of Object.entries(jointsState)) {
+    let row = document.createElement("tr");
+    let jn = document.createElement("td");
+    let pos = document.createElement("td");
+    let temp = document.createElement("td");
+
+    jn.innerHTML = jointName;
+    temp.innerHTML = state;
+    pos.innerHTML = "0";
+
+    row.appendChild(jn);
+    row.appendChild(pos);
+    row.appendChild(temp);
+    table.appendChild(row)
+  }
+  return table
+}

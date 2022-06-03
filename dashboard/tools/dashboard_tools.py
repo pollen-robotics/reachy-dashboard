@@ -8,7 +8,7 @@ from google.protobuf.wrappers_pb2 import BoolValue
 
 from reachy_sdk_api import fan_pb2_grpc
 from reachy_sdk_api import joint_pb2, joint_pb2_grpc
-from reachy_sdk_api.joint_pb2 import JointsCommand, JointCommand, JointId
+from reachy_sdk_api.joint_pb2 import JointsCommand, JointCommand, JointId, JointsStateRequest, JointField
 from reachy_sdk.fan import Fan
 from reachy_sdk.joint import Joint
 from reachy_sdk.arm import LeftArm, RightArm
@@ -122,6 +122,22 @@ class ReachyDashboard:
             self._fans[fan].on()
         else:
             self._fans[fan].off()
+
+    def get_temperatures(self):
+        temperatures = {}
+
+        for part in self.joints:
+            temp_part = {}
+            ids = [JointId(name=joint) for joint in self.joints[part]]
+            request = JointsStateRequest(ids=ids, requested_fields=[JointField.TEMPERATURE])
+            res = self.joint_stub.GetJointsState(request)
+
+            for (joint_id, state) in zip(res.ids, res.states):
+                temp_part[joint_id.name] = int(state.temperature.value)
+
+            temperatures[part] = temp_part
+
+        return temperatures
 
     def __exit__(self):
         self._grpc_channel.close()
