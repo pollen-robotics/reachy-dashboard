@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;500;700&family=Montserrat:wght@200;300;400;500;600&display=swap">
+  <title>Reachy Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 css and js -->
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- custom CSS file -->
+  <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
+  <!-- custom js scripts -->
+  <script src="../assets/js/material-dashboard-reachy.js"></script>
+
+</head>
+
+<body onload="onloadSetup()"></body>
+
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+        <img src="../assets/img/logo.jpg" style="width:40px;" class="rounded-pill">
+    </a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="/">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/service">Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/wifi">Wifi</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <h3>Temperatures and positions</h3>    
+    </div>
+    <div class="row">
+        <h3>Sensors</h3>
+    </div>
+    <div class="row">
+        <h3>Compliance</h3>
+        <a>Select a robot part to change its compliance</a>
+        <div class="col-sm-6 text-center">
+          <select class="form-select form-select-sm" aria-label="Default select example" name="part" id="partSelecter">
+              <option value="Robot">Robot</option>
+              <option value="Left arm">Left arm</option>
+              <option value="Right arm">Right arm</option>
+              <option value="Head">Head</option>
+              <option value="Both arms">Both arms</option>
+          </select>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-6 text-center">
+              <button class="btn bg-pollen-dark-blue" type="submit" onclick="changeCompliance('false')">Turn on</button>
+              <button class="btn bg-pollen-dark-blue ms-3" type="submit" onclick="changeCompliance('true')">Turn off</button>
+              <button class="btn bg-pollen-dark-blue ms-3" type="submit">Turn off smoothly</button>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+      <h3>Fans</h3>
+        <div class="col-sm-6 text-center">
+          <select class="form-select form-select-sm" name="fanForm" id="fanSelecter"></select>
+          <div class="d-inline-block mt-2 me-1">Off</div>
+          <div class="form-check form-switch d-inline-block mt-2">
+            <input type="checkbox" class="form-check-input" id="fanStateSwitch" onchange="switchFanState()">
+            <label for="fanStateSwitch" class="form-check-label">On</label>
+          </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function onloadSetup() {
+    updateAvailableFans();
+  }
+</script>
+
+</body>
+</html>

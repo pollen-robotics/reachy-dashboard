@@ -1,4 +1,5 @@
 """Flask server for RAP-2021."""
+from crypt import methods
 import os
 import json
 
@@ -7,6 +8,7 @@ from flask import Flask, request, redirect, url_for, render_template, Response
 import tools.network_tools as network_tools
 import tools.debug_tools as debug_tools
 import tools.service_tools as service_tools
+import tools.dashboard_tools as dashboard_tools
 
 import time
 
@@ -14,15 +16,7 @@ app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
 
 
-@app.route('/update-wifi', methods=['POST'])
-def update_wifi():
-    if net_tools.get_connection_status()['mode'] == 'Hotspot':
-        net_tools.set_hotspot_state('off')
-
-    net_tools.setup_new_wifi(request.form['ssid'], request.form['password'])
-    return redirect(url_for('wifi'))
-
-
+# Render templates
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -42,6 +36,27 @@ def wifi():
 @app.route('/service')
 def service():
     return render_template('service.html')
+
+
+@app.route('/dashboard')
+def dashboard():
+    global reachy_dashboard
+    reachy_dashboard = dashboard_tools.ReachyDashboard()
+    if not reachy_dashboard.connection_succeed:
+        print('Could not connect to Reachy')
+    else:
+        print('Connected to Reachy.')
+    return render_template('dashboard.html')
+
+
+# Wifi API
+@app.route('/update-wifi', methods=['POST'])
+def update_wifi():
+    if net_tools.get_connection_status()['mode'] == 'Hotspot':
+        net_tools.set_hotspot_state('off')
+
+    net_tools.setup_new_wifi(request.form['ssid'], request.form['password'])
+    return redirect(url_for('wifi'))
 
 
 @app.route('/api/ip')
@@ -91,6 +106,7 @@ def update_connection_card_info():
     )
 
 
+# Index API
 @app.route('/api/missing_modules_names')
 def get_missing_modules_names():
     return Response(
@@ -107,6 +123,7 @@ def get_missing_modules_bool():
     )
 
 
+# Service API
 @app.route('/api/list_services')
 def list_services():
     return Response(
@@ -134,9 +151,45 @@ def is_service_running():
         mimetype='application/json',
     )
 
+
 @app.route('/api/status_service', methods=['POST'])
 def status_service():
     return service_tools.get_service_status(request.data.decode())
+
+
+# Dashboard API
+@app.route('/api/change-compliance', methods=['GET'])
+def change_compliance():
+    part_req = request.args.get('part')
+
+    compliance_req = request.args.get('compliance')
+    if compliance_req == 'false':
+        compliance_req = False
+    else:
+        compliance_req = True
+
+    reachy_dashboard.change_compliancy(
+        part=part_req,
+        compliance=compliance_req
+        )
+    return Response(status=200)
+
+
+@app.route('/api/get-fans-info')
+def get_fans_info():
+    return Response(
+        response=json.dumps(reachy_dashboard.get_fans_info()),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/set-fans-state', methods=['GET'])
+def set_fans_state():
+    fan_req = request.args.get('fan')
+    state_req = request.args.get('state')
+
+    reachy_dashboard.set_fan_state(fan=fan_req, state=state_req)
+    return Response(status=200)
 
 
 if __name__ == '__main__':
