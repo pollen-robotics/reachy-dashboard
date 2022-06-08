@@ -211,6 +211,18 @@ def get_temperatures():
         mimetype='application/json',
     )
 
+
+@app.route('/api/get-states')
+def get_states():
+    _reachy = dashboard_tools.ReachyDashboard()
+    states = _reachy.get_states()
+    _reachy.__exit__()
+    return Response(
+        response=json.dumps(states),
+        mimetype='application/json',
+    )
+
+
 if __name__ == '__main__':
 
     # time.sleep(10.0)

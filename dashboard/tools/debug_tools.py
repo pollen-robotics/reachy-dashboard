@@ -76,7 +76,7 @@ def get_required_modules(empty_values: bool = False):
 
     for part in config:
         if empty_values:
-            required_modules = []
+            required_modules = {}
         else:
             required_modules = {
                 part_name: [value.__module__, value.id] for (part_name, value) in part.items() if type(value) not in fan_types
@@ -109,25 +109,31 @@ def get_missing_modules():
     return dct
 
 
+# def get_missing_modules_names():
+#     missing_names = {}
+
+#     required_modules = get_required_modules()
+#     missing_modules = get_missing_modules()
+
+#     for robot_part, miss_cont in list(missing_modules.items()):
+#         list_miss_names = []
+
+#         if miss_cont:
+#             for container in miss_cont:
+#                 # miss_value = [list(container.keys())[0], list(container.values())[0]]
+
+#                 for key_req, val_req in required_modules[robot_part].items():
+#                     if val_req == container:
+#                         list_miss_names.append(key_req)
+#         missing_names[robot_part] = list_miss_names
+#     return missing_names
+
 def get_missing_modules_names():
     missing_names = {}
 
-    required_modules = get_required_modules()
-    missing_modules = get_missing_modules()
-
-    for robot_part, miss_cont in list(missing_modules.items()):
-        list_miss_names = []
-
-        if miss_cont:
-            for container in miss_cont:
-                miss_value = [list(container.keys())[0], list(container.values())[0]]
-
-                for key_req, val_req in required_modules[robot_part].items():
-                    if val_req == miss_value:
-                        list_miss_names.append(key_req)
-        missing_names[robot_part] = list_miss_names
+    for part, containers in get_missing_modules().items():
+        missing_names[part] = list(containers.keys())
     return missing_names
-
 
 def are_missing_modules():
     required_modules = get_required_modules()

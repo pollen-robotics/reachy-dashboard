@@ -1,4 +1,5 @@
 from typing import List, Dict
+from numpy import rad2deg
 
 import grpc
 from grpc._channel import _InactiveRpcError
@@ -138,6 +139,27 @@ class ReachyDashboard:
             temperatures[part] = temp_part
 
         return temperatures
+    
+    def get_states(self):
+        states = {}
+
+        for part in self.joints:
+            state_part = {}
+            ids = [JointId(name=joint) for joint in self.joints[part]]
+            request = JointsStateRequest(
+                ids=ids,
+                requested_fields=[JointField.TEMPERATURE, JointField.PRESENT_POSITION])
+            res = self.joint_stub.GetJointsState(request)
+
+            for (joint_id, state) in zip(res.ids, res.states):
+                state_joint = {}
+                state_joint['temperature'] = int(state.temperature.value)
+                state_joint['position'] = int(rad2deg(state.present_position.value))
+                state_part[joint_id.name] = state_joint
+
+            states[part] = state_part
+
+        return states
 
     def __exit__(self):
         self._grpc_channel.close()

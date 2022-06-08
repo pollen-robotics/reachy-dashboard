@@ -52,7 +52,6 @@ function changeCompliance(compliance) {
 }
 
 function fillPartSelecter() {
-    console.log('Yo');
     let partSelecter = document.getElementById('partSelecter');
 
     const request = new XMLHttpRequest();
@@ -64,7 +63,6 @@ function fillPartSelecter() {
 
     request.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      console.log('Hey');
       for (const [key, value] of Object.entries(this.response)){
         var partOption = document.createElement("option");
         partOption.text = value;
@@ -90,7 +88,7 @@ function createStateCards() {
     }
   }
   }
-  request.open("GET", "/api/get-temperatures");
+  request.open("GET", "/api/get-states");
   request.send();
 }
 
@@ -107,17 +105,34 @@ function createStateCard(part, jointsState) {
 
   let cardBody = document.createElement("div");
   cardBody.className = "card-body";
+  cardBody.id = `${part}-card-body`;
 
-  let table = createTable(jointsState);
-
-  cardBody.appendChild(table);
   card.appendChild(cardHeader);
   card.appendChild(cardBody);
   col.appendChild(card);
-  return card
+  return col
 }
 
-function createTable(jointsState) {
+function fillStatesTables() {
+  const request = new XMLHttpRequest();
+  request.responseType = "json";
+
+  request.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    for (const [key, value] of Object.entries(this.response)){
+      fillStateTable(key, value);
+      }
+    }
+  }
+  request.open("GET", "/api/get-states");
+  request.send();
+}
+
+function fillStateTable(part, jointsState) {
+  let cardBody = document.getElementById(`${part}-card-body`);
+  while (cardBody.firstChild) {
+    cardBody.removeChild(cardBody.lastChild);
+  }
   let table = document.createElement("table");
   table.style = "width:100%";
 
@@ -141,13 +156,20 @@ function createTable(jointsState) {
     let temp = document.createElement("td");
 
     jn.innerHTML = jointName;
-    temp.innerHTML = state;
-    pos.innerHTML = "0";
+    pos.innerHTML = state['position'];
+
+    temp.innerHTML = state['temperature'];
+
+    if (parseFloat(state['temperature']) < 46.0) {
+      temp.style.color = "#00AA00";
+    } else {
+      temp.style.color = "#C14949";
+    }
 
     row.appendChild(jn);
     row.appendChild(pos);
     row.appendChild(temp);
-    table.appendChild(row)
+    table.appendChild(row);
   }
-  return table
+  cardBody.appendChild(table);
 }
