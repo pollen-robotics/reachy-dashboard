@@ -96,7 +96,6 @@ setFooterStatus = (service) => {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = e => {
         const serviceStatus = JSON.parse(xhr.response);
-        console.log(serviceStatus);
         footer.innerHTML = serviceStatus;
         if (serviceStatus == 'running') {
             headerSvg.setAttribute("fill", "#c14949");
@@ -125,4 +124,16 @@ clearLog = () => {
     const displayer = document.getElementById("logId");
     displayer.innerHTML = "";
     document.getElementById("clearLogId").hidden = true;
+}
+
+getRobotConfig = () => {
+    const footer = document.getElementById("footer-container");
+    const request = new XMLHttpRequest();
+
+    request.onload = e => {
+        const config = JSON.parse(request.response);
+        footer.innerHTML = `Reachy configuration: ${config}`;
+    }
+    request.open("GET", "/api/get_reachy_config", true);
+    request.send();
 }

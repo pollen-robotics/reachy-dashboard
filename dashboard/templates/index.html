@@ -14,9 +14,10 @@
   <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
   <!-- custom js scripts -->
   <script src="../assets/js/material-index-reachy.js"></script>
+  <script src="../assets/js/material-service-reachy.js"></script>
 </head>
 
-<body onload="refreshStatus()"></body>
+<body onload="onloadSetup()"></body>
 
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
@@ -80,5 +81,18 @@
   </div>
 </div>
 
+<script>
+  function onloadSetup() {
+    refreshStatus();
+    getRobotConfig();
+  }
+</script>
+
 </body>
+
+<nav class="navbar fixed-bottom navbar-light bg-light">
+  <div class="container-fluid" id="footer-container">
+  </div>
+</nav>
+
 </html>

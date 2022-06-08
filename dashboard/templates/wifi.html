@@ -14,6 +14,7 @@
   <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
   <!-- custom js scripts -->
   <script src="../assets/js/material-wifi-reachy.js"></script>
+  <script src="../assets/js/material-service-reachy.js"></script>
 </head>
 
 <body onload="onloadSetup({{ wifi_list }})"></body>
@@ -112,8 +113,15 @@
       fillConnectionCard();
       onloadAvailableNetworks(wifi_list);
       check_if_no_network();
+      getRobotConfig();
     }
 </script>
 
 </body>
+
+<nav class="navbar fixed-bottom navbar-light bg-light">
+  <div class="container-fluid" id="footer-container">
+  </div>
+</nav>
+
 </html>

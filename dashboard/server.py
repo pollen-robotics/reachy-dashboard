@@ -5,6 +5,8 @@ import json
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
+from reachy_controllers.joint_state_controller import get_reachy_model 
+
 import tools.network_tools as network_tools
 import tools.debug_tools as debug_tools
 import tools.service_tools as service_tools
@@ -219,6 +221,14 @@ def get_states():
     _reachy.__exit__()
     return Response(
         response=json.dumps(states),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/get_reachy_config')
+def get_config():
+    return Response(
+        response=json.dumps(get_reachy_model()),
         mimetype='application/json',
     )
 

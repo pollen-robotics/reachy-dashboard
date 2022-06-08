@@ -16,7 +16,7 @@
   <script src="../assets/js/material-service-reachy.js"></script>
 </head>
 
-<body onload="makeAllServiceCards()"></body>
+<body onload="onloadSetup()"></body>
 
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
@@ -50,5 +50,18 @@
     </div>
 </div>
 
+<script>
+  function onloadSetup() {
+    makeAllServiceCards();
+    getRobotConfig();
+  }
+</script>
+
 </body>
+
+<nav class="navbar fixed-bottom navbar-light bg-light">
+  <div class="container-fluid" id="footer-container">
+  </div>
+</nav>
+
 </html>

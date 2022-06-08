@@ -14,7 +14,7 @@
   <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
   <!-- custom js scripts -->
   <script src="../assets/js/material-dashboard-reachy.js"></script>
-
+  <script src="../assets/js/material-service-reachy.js"></script>
 </head>
 
 <body onload="onloadSetup()"></body>
@@ -43,27 +43,6 @@
     <div class="row">
         <h3>Temperatures and positions</h3>
         <div class="row" id="jointCardsHolder"></div>
-        <!-- <div class="col-sm">
-          <div class="card text-center">
-            <div class="card-header">
-              Left arm
-            </div>
-            <div class="card-body">
-              <table style="width:100%">
-                <tr>
-                  <th></th>
-                  <th>Position</th>
-                  <th>Temperature</th>
-                </tr>
-                <tr>
-                  <td>l_shoulder_pitch</td>
-                  <td>0</td>
-                  <td style="color:#ff0000">40</td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div> -->
     </div>
     <div class="row">
         <h3>Compliance</h3>
@@ -99,8 +78,15 @@
     fillPartSelecter();
     createStateCards();
     setInterval(fillStatesTables, 1000);
+    getRobotConfig();
   }
 </script>
 
 </body>
+
+<nav class="navbar fixed-bottom navbar-light bg-light">
+  <div class="container-fluid" id="footer-container">
+  </div>
+</nav>
+
 </html>
