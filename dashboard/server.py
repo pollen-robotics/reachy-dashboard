@@ -208,24 +208,18 @@ def set_fans_state():
     return Response(status=200)
 
 
-@app.route('/api/get-temperatures')
-def get_temperatures():
-    _reachy = dashboard_tools.ReachyDashboard()
-    temp = _reachy.get_temperatures()
-    _reachy.__exit__()
-    return Response(
-        response=json.dumps(temp),
-        mimetype='application/json',
-    )
+# @app.route('/api/get-temperatures')
+# def get_temperatures():
+#     return Response(
+#         response=json.dumps(reachy_dashboard.get_temperatures()),
+#         mimetype='application/json',
+#     )
 
 
 @app.route('/api/get-states')
 def get_states():
-    _reachy = dashboard_tools.ReachyDashboard()
-    states = _reachy.get_states()
-    _reachy.__exit__()
     return Response(
-        response=json.dumps(states),
+        response=json.dumps(reachy_dashboard.get_states()),
         mimetype='application/json',
     )
 
