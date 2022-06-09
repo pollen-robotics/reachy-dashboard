@@ -82,7 +82,6 @@ const writeStatMsg = (missing_modules) => {
   else {
     missing_motor = true;
   }
-  console.log(missing_modules.length);
   displayInfo(missing_motor, missing_force_sensor);
 }
 
@@ -113,7 +112,20 @@ const displayInfo = (motors, sensor) => {
   }
 }
 
+const hideConnectionButton = () => {
+  const request = new XMLHttpRequest();
+  request.onload = e => {
+    const missing_modules_bool = JSON.parse(request.response);
+    if (missing_modules_bool == "none_missing") {
+      document.getElementById("containerConnectButton").hidden = false;
+    }
+  }
+  request.open("GET", "/api/missing_modules_bool");
+  request.send();  
+}
+
 const refreshStatus = () => {
   alertIfNoModules();
-  makeAllCards(); 
+  makeAllCards();
+  hideConnectionButton();
 }

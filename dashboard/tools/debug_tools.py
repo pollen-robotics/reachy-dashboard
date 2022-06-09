@@ -1,3 +1,4 @@
+import time
 import os
 from os import path
 
@@ -8,8 +9,9 @@ from subprocess import CalledProcessError, check_output
 
 import reachy_pyluos_hal
 from reachy_pyluos_hal.config import load_config
-
 from reachy_controllers.joint_state_controller import get_reachy_model
+
+from tools.service_tools import is_service_running
 
 
 ros_log_path = path.expanduser('~') + '/.ros/log'
@@ -89,9 +91,7 @@ def get_required_modules(empty_values: bool = False):
 
 
 def get_missing_modules():
-    ros_topic_list = check_output(['ros2', 'topic', 'list']).decode().strip().split()
-
-    if len(ros_topic_list) <= 2:
+    if is_service_running('reachy_sdk_server') == 'stopped':
         return get_required_modules(empty_values=False)
 
     with open(get_latest_log_folders() + '/launch.log') as log_file:
@@ -108,25 +108,6 @@ def get_missing_modules():
     dct = ast.literal_eval(str_dct)
     return dct
 
-
-# def get_missing_modules_names():
-#     missing_names = {}
-
-#     required_modules = get_required_modules()
-#     missing_modules = get_missing_modules()
-
-#     for robot_part, miss_cont in list(missing_modules.items()):
-#         list_miss_names = []
-
-#         if miss_cont:
-#             for container in miss_cont:
-#                 # miss_value = [list(container.keys())[0], list(container.values())[0]]
-
-#                 for key_req, val_req in required_modules[robot_part].items():
-#                     if val_req == container:
-#                         list_miss_names.append(key_req)
-#         missing_names[robot_part] = list_miss_names
-#     return missing_names
 
 def get_missing_modules_names():
     missing_names = {}
