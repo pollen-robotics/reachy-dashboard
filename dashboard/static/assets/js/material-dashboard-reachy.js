@@ -51,6 +51,25 @@ function changeCompliance(compliance) {
     request.send();  
 }
 
+function handleComplianceClick(compliance) {
+  changeCompliance(compliance);
+  let onButton = document.getElementById('on-button');
+  let offButton = document.getElementById('off-button');
+  let smoothButton = document.getElementById('smooth-button');
+
+  onButton.disabled = true;
+  offButton.disabled = true;
+  smoothButton.disabled = true;
+
+  function activateButtons() {
+    onButton.disabled = false;
+    offButton.disabled = false;
+    smoothButton.disabled = false;
+  }
+
+  setTimeout(activateButtons, 1000);
+}
+
 function fillPartSelecter() {
     let partSelecter = document.getElementById('partSelecter');
 

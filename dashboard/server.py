@@ -161,10 +161,15 @@ def status_service():
 
 # Dashboard API
 @app.route('/api/change-compliance', methods=['GET'])
-def change_compliance():
+async def change_compliance():
     part_req = request.args.get('part')
 
     compliance_req = request.args.get('compliance')
+
+    if compliance_req == 'smooth':
+        await reachy_dashboard.turn_off_smoothly(part=part_req)
+        return Response(status=200)
+
     if compliance_req == 'false':
         compliance_req = False
     else:
