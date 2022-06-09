@@ -28,13 +28,13 @@ const makeOneServiceCard = (service) => {
     restartButton.className = "btn bg-pollen-dark-blue btn-md mt-1";
     restartButton.id = service+"_restartButton";
     restartButton.innerHTML = "Restart";
-    restartButton.onclick = () => restartService(service);
+    restartButton.onclick = () => restartService(service, restartButton);
 
     const stopButton = document.createElement("button");
     stopButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
     stopButton.id = service+"_stopButton";
     stopButton.innerHTML = "Stop";
-    stopButton.onclick = () => stopService(service);
+    stopButton.onclick = () => stopService(service, stopButton);
 
     const logButton = document.createElement("button");
     logButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
@@ -72,22 +72,26 @@ makeAllServiceCards = () => {
     request.send();
 }
 
-stopService = (service) => {
+stopService = (service, button) => {
     clearLog();
+    button.disabled = true;
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/stop_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
     setTimeout(() => setFooterStatus(service), 2000);
+    setTimeout(function(){button.disabled = false;}, 2000);
 }
 
-restartService = (service) => {
+restartService = (service, button) => {
     clearLog();
+    button.disabled = true;
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/restart_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
     setTimeout(() => setFooterStatus(service), 2000);
+    setTimeout(function(){button.disabled = false;}, 2000);
 }
 
 setFooterStatus = (service) => {
