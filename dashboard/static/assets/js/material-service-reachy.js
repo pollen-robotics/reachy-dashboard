@@ -78,7 +78,7 @@ stopService = (service) => {
     xhr.open("POST", "/api/stop_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
-    setFooterStatus(service);
+    setTimeout(() => setFooterStatus(service), 2000);
 }
 
 restartService = (service) => {
@@ -87,7 +87,7 @@ restartService = (service) => {
     xhr.open("POST", "/api/restart_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
-    setFooterStatus(service);
+    setTimeout(() => setFooterStatus(service), 2000);
 }
 
 setFooterStatus = (service) => {
