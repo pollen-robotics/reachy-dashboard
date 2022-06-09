@@ -1,3 +1,5 @@
+let interval = {};
+
 const makeOneServiceCard = (service) => {
     displayer = document.getElementById("displayerServiceCards");
 
@@ -109,18 +111,24 @@ setFooterStatus = (service) => {
 }
 
 getServiceStatus = (service) => {
-    const request = new XMLHttpRequest();
-    request.onload = e => {
-        const displayer = document.getElementById("logId");
-        displayer.innerHTML = "<pre>" + request.response + "</pre>";
-        document.getElementById("clearLogId").hidden = false;
-    }
-    request.open("POST", "/api/status_service", true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.send(JSON.stringify(service));
+    const displayer = document.getElementById("logId");
+
+    interval = setInterval(
+        function(){
+            const request = new XMLHttpRequest();
+            request.onload = e => {
+                displayer.innerHTML = "<pre>" + request.response + "</pre>";
+                document.getElementById("clearLogId").hidden = false;
+            }
+            request.open("POST", "/api/status_service", true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.send(JSON.stringify(service));
+        }
+    , 1000);
 }
 
 clearLog = () => {
+    clearInterval(interval);
     const displayer = document.getElementById("logId");
     displayer.innerHTML = "";
     document.getElementById("clearLogId").hidden = true;
