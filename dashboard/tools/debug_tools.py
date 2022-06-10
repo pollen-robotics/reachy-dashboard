@@ -17,6 +17,42 @@ from tools.service_tools import is_service_running
 ros_log_path = path.expanduser('~') + '/.ros/log'
 host_name = os.uname().nodename
 
+dxlid_to_name = {
+    10: 'r_shoulder_pitch',
+    11: 'r_shoulder_roll',
+    12: 'r_arm_yaw',
+    13: 'r_elbow_pitch',
+    14: 'r_forearm_yaw',
+    15: 'r_wrist_pitch',
+    16: 'r_wrist_roll',
+    17: 'r_gripper',
+    20: 'l_shoulder_pitch',
+    21: 'l_shoulder_roll',
+    22: 'l_arm_yaw',
+    23: 'l_elbow_pitch',
+    24: 'l_forearm_yaw',
+    25: 'l_wrist_pitch',
+    26: 'l_wrist_roll',
+    27: 'l_gripper',
+    30: 'l_antenna',
+    31: 'r_antenna',
+}
+
+force_sensorid_to_name = {
+    10: 'r_force_gripper',
+    20: 'l_force_gripper',
+}
+
+orbitaid_to_name = {
+    40: 'neck',
+}
+
+module_id_to_name = {
+    'reachy_pyluos_hal.dynamixel': dxlid_to_name,
+    'reachy_pyluos_hal.force_sensor': force_sensorid_to_name,
+    'reachy_pyluos_hal.orbita': orbitaid_to_name,
+}
+
 
 def from_datetime_to_str(dt: datetime):
     year = str(dt.year)
@@ -106,7 +142,20 @@ def get_missing_modules():
 
     str_dct = missing_msg.split('devices ')[1].split('!')[0]
     dct = ast.literal_eval(str_dct)
-    return dct
+    return _correct_dct(dct)
+
+
+def _correct_dct(dct):
+    corrected_dct = {}
+
+    for part in dct.keys():
+        missings = {}
+        for dic in dct[part]:
+            module_type = list(dic.items())[0][0]
+            module_id = list(dic.items())[0][1]
+            missings[module_id_to_name[module_type][module_id]] = [module_type, module_id]
+        corrected_dct[part] = missings
+    return corrected_dct
 
 
 def get_missing_modules_names():
@@ -115,6 +164,7 @@ def get_missing_modules_names():
     for part, containers in get_missing_modules().items():
         missing_names[part] = list(containers.keys())
     return missing_names
+
 
 def are_missing_modules():
     required_modules = get_required_modules()
