@@ -101,14 +101,19 @@ const alertIfNoModules = () => {
 const displayInfo = (motors, sensor) => {
   alertMotor = document.getElementById('alertNoMotor');
   alertSensor = document.getElementById('alertNoSensor');
+  alertAll = document.getElementById('alertAllMissing');
 
-  infoDisplayer = document.getElementById('alertDisplayer');
+  alertDisplayer = document.getElementById('alertDisplayer');
+  allMissingAlertRow = document.getElementById('allMissingAlertRow');
 
   if (motors == true) {
-    infoDisplayer.appendChild(alertMotor);
+    alertDisplayer.appendChild(alertMotor);
   }
   if (sensor == true) {
-    infoDisplayer.appendChild(alertSensor);
+    alertDisplayer.appendChild(alertSensor);
+  }
+  if (motors == true && sensor == true) {
+    allMissingAlertRow.appendChild(alertAll);
   }
 }
 

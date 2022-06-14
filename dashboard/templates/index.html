@@ -39,6 +39,8 @@
   </div>
 </nav>
 
+<div class="row" id="allMissingAlertRow"></div>
+
 <div class="container mt-5">
     <div class="row justify-content-center" id="reachyPartCards">
 </div>
@@ -52,6 +54,11 @@
     Check Reachy's documentation to learn how to <a href="https://docs.pollen-robotics.com/help/system/reconnect-load-sensor/" target="_blank" class="alert-link">reconnect a force sensor.</a>
     Once done, try restarting <a href="/service" target="_blank" class="alert-link">reachy_sdk_server.</a> and come back to this page.
   </div >
+  <div class="alert alert-danger" id="alertAllMissing" role="alert">
+    <b>No module detected</b>
+    <p>Each Reachy's module is missing, did you turn the switch in Reachy's back before turning on its computer?<br>
+    Is the service reachy_sdk_server running?</p>
+  </div>
 </div>
 
 <div class="row" id="alertDisplayer"></div>
