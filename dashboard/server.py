@@ -1,5 +1,4 @@
 """Flask server for RAP-2021."""
-from crypt import methods
 import os
 import json
 
@@ -206,14 +205,6 @@ def set_fans_state():
 
     reachy_dashboard.set_fan_state(fan=fan_req, state=state_req)
     return Response(status=200)
-
-
-# @app.route('/api/get-temperatures')
-# def get_temperatures():
-#     return Response(
-#         response=json.dumps(reachy_dashboard.get_temperatures()),
-#         mimetype='application/json',
-#     )
 
 
 @app.route('/api/get-states')
