@@ -1,11 +1,11 @@
 #include <Adafruit_SSD1306.h>
 
-#define nombreDePixelsEnLargeur 128         // Taille de l'écran OLED, en pixel, au niveau de sa largeur
-#define nombreDePixelsEnHauteur 64          // Taille de l'écran OLED, en pixel, au niveau de sa hauteur
-#define brocheResetOLED         -1          // Reset de l'OLED partagé avec l'Arduino (d'où la valeur à -1, et non un numéro de pin)
-#define adresseI2CecranOLED     0x3C        // Adresse de "mon" écran OLED sur le bus i2c (généralement égal à 0x3C ou 0x3D)
+#define pixelsWidth 128         // Width of the screen, in nb of pixels
+#define pixelsHeight 64          // Height of the screen, in nb of pixels
+#define pinResetOLED -1          // Screen reset pin
+#define i2cAddress 0x3C        // i2c address of the screen
 
-Adafruit_SSD1306 ecranOLED(nombreDePixelsEnLargeur, nombreDePixelsEnHauteur, &Wire, brocheResetOLED);
+Adafruit_SSD1306 ecranOLED(pixelsWidth, pixelsHeight, &Wire, pinResetOLED);
 
 const byte numChars = 32;
 char receivedChars[numChars];
@@ -15,7 +15,7 @@ boolean newData = false;
 void setup() {
     Serial.begin(9600);
     // Serial.println("<Arduino is ready>");
-    if(!ecranOLED.begin(SSD1306_SWITCHCAPVCC, adresseI2CecranOLED))
+    if(!ecranOLED.begin(SSD1306_SWITCHCAPVCC, i2cAddress))
       while(1);
     ecranOLED.clearDisplay();
     ecranOLED.setTextSize(2);
