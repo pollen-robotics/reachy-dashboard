@@ -175,9 +175,9 @@ function fillStateTable(part, jointsState) {
     let temp = document.createElement("td");
 
     jn.innerHTML = jointName;
-    pos.innerHTML = state['position'];
+    pos.innerHTML = state['position'] + ' °';
 
-    temp.innerHTML = state['temperature'];
+    temp.innerHTML = state['temperature'] + ' °C';
 
     if (parseFloat(state['temperature']) < 46.0) {
       temp.style.color = "#00AA00";
