@@ -223,6 +223,22 @@ def get_config():
     )
 
 
+# Helper pages
+@app.route('/reconnect_motor')
+def reconnect_motor():
+    return render_template('reconnect_motor.html')
+
+
+@app.route('/reconnect_load_sensor')
+def reconnect_load_sensor():
+    return render_template('reconnect_load_sensor.html')
+
+
+@app.route('/discovery')
+def discovery():
+    return render_template('discovery.html')
+
+
 if __name__ == '__main__':
 
     # time.sleep(10.0)

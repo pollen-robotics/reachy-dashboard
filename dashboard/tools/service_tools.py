@@ -29,4 +29,4 @@ def is_service_running(service: str):
 
 
 def get_service_status(service: str):
-    return run([f'systemctl --user status {service}.service'], stdout=PIPE, shell=True).stdout
+    return run([f'systemctl --user status -n99999 {service}.service'], stdout=PIPE, shell=True).stdout

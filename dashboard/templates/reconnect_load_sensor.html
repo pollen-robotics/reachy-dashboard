@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;500;700&family=Montserrat:wght@200;300;400;500;600&display=swap">
+  <title>Reachy Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 css and js -->
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- custom CSS file -->
+  <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
+</head>
+
+<body style="margin-bottom:10%;">
+<nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+        <img src="../assets/img/logo.jpg" style="width:40px;" class="rounded-pill">
+    </a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/service">Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/wifi">Wifi</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<body>
+	
+</body>
+<h1>Disconnected load sensor</h1>
+
+<p>
+  Each arm of Reachy is equipped with a load sensor to measure how much force is applied by the gripper to the object.
+  It allows to know when the gripper is holding an object. </br>
+  The load sensor is in two parts: the sensor itself and an electronic board reading its values and connected to Reachy's
+  internal computer.
+</p>
+
+<img class="displayed" src="../assets/img/force_sensor_1.jpg" alt="Load sensor alone" width="20%"/>
+
+<p>
+  The sensor is placed between the two 3D printed pieces composing Reachy's gripper.
+</p>
+
+<img class="displayed" src="../assets/img/force_sensor_2.jpg" alt="Load sensor in gripper" width="20%"/>
+
+<p>
+  The electronic board is placed between the gripper and wrist_roll motors of the arms.
+</p>
+
+<img class="displayed" src="../assets/img/arm_schematic.png" alt="Arm schematic" width="20%"/>
+<img class="displayed" src="../assets/img/force_sensor_3.png" alt="Load sensor front and back view" width="20%"/>
+<p>
+  The board is connected to Reachy's computer by a long 8 black wires cable plugged by the back. </br>
+
+  <mark>
+    When we refer in the documentations as the load sensor being disconnected, we refer to the cable between the board and
+    Reachy's computer as disconnected. It's usually the case, the wires between the sensor and the board are rarely desoldered.
+  </mark> </br>
+	
+  You can check an example of the disconnected cable below.
+</p>
+
+<img class="displayed" src="../assets/img/force_sensor_4.jpg" alt="Load sensor disconnected cable" width="20%"/>
+
+<p>
+  Be aware that there is a way for the connector. On the cable there is a short and a long side. 
+</p>
+
+<img class="displayed" src="../assets/img/force_sensor_5.png" alt="Load sensor board" width="20%"/>
+
+</html>
