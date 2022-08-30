@@ -42,6 +42,12 @@ const makeOneServiceCard = (service) => {
     logButton.innerHTML = "Show logs";
     logButton.onclick = () => getServiceStatus(service);
 
+    const testButton = document.createElement("button");
+    testButton.className = "btn bg-pollen-dark-blue btn-md mt-1 ms-3";
+    testButton.id = service+"_testButton";
+    testButton.innerHTML = "Test";
+    testButton.onclick = () => updateProgressBar();
+
     const cardFooter = document.createElement("div");
     cardFooter.className = "card-footer text-center";
     const footerText = document.createElement("i");
@@ -84,14 +90,15 @@ stopService = (service, button) => {
 }
 
 restartService = (service, button) => {
+    updateProgressBar(service)
     clearLog();
     button.disabled = true;
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/restart_service", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(service));
-    setTimeout(() => setFooterStatus(service), 2000);
-    setTimeout(function(){button.disabled = false;}, 2000);
+    setTimeout(() => setFooterStatus(service), 10000);
+    setTimeout(function(){button.disabled = false;}, 10000);
 }
 
 setFooterStatus = (service) => {
@@ -115,27 +122,22 @@ setFooterStatus = (service) => {
 }
 
 getServiceStatus = (service) => {
-    const displayer = document.getElementById("logId");
+    const displayer = document.getElementById("logDisplayer");
 
-    interval = setInterval(
-        function(){
-            const request = new XMLHttpRequest();
-            request.onload = e => {
-                displayer.innerHTML = "<pre>" + request.response + "</pre>";
-                document.getElementById("clearLogId").hidden = false;
-            }
-            request.open("POST", "/api/status_service", true);
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(service));
-        }
-    , 1000);
+    const request = new XMLHttpRequest();
+    request.onload = e => {
+        displayer.innerHTML = "<pre>" + request.response + "</pre>";
+        document.getElementById("clearLogButton").hidden = false;
+    }
+    request.open("POST", "/api/status_service", true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(service));
 }
 
 clearLog = () => {
-    clearInterval(interval);
-    const displayer = document.getElementById("logId");
+    const displayer = document.getElementById("logDisplayer");
     displayer.innerHTML = "";
-    document.getElementById("clearLogId").hidden = true;
+    document.getElementById("clearLogButton").hidden = true;
 }
 
 getRobotConfig = () => {
@@ -148,4 +150,28 @@ getRobotConfig = () => {
     }
     request.open("GET", "/api/get_reachy_config", true);
     request.send();
+}
+
+updateProgressBar = (service) => {
+    const progressBar = document.getElementById("serviceProgressBar");
+    const progressBarContainer = document.getElementById("progressBarContainer");
+
+    progressBarContainer.hidden = false;
+    document.getElementById("restartServiceName").innerHTML = "Restarting " + service + "...";
+
+    let i = 0;
+    progressBar.ariaValueNow = i;
+    progressBar.innerHTML = `${i}%`;
+    progressBar.style = `width: ${i}%`;
+
+    const interval = setInterval(addProgress, 100);
+    function addProgress() {
+        if (i < 100) {
+            i++;
+            progressBar.ariaValueNow = i;
+            progressBar.innerHTML = `${i}%`;
+            progressBar.style = `width: ${i}%`;            
+        }
+    }
+    setTimeout(() => progressBarContainer.hidden = true, 12000);
 }

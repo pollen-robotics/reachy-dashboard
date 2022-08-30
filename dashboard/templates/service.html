@@ -38,15 +38,22 @@
   </div>
 </nav>
 
-
 <div class="container mt-5">
     <div class="row justify-content-center" id="displayerServiceCards">
         <h3>Services available</h3>    
     </div>
-    <div class="">
+    <div class="row progress-row" hidden="true" id="progressBarContainer">
+      <p id="restartServiceName"></p>
+      <div class="progress mt-0">
+        <div class="progress-bar bg-pollen-dark-blue" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="serviceProgressBar"></div>
+      </div>
+    </div>
+    <div class="row mt-5 justify-content-center">
       <h3>Log</h3>
-      <div class="overflow-scroll" id="logId"></div>
-      <button class="btn bg-pollen-dark-blue btn-md mt-1 ms-3" onclick="clearLog()" id="clearLogId" hidden="true">Clear</button>
+      <div class="scroll-container" id="logDisplayer"></div>
+      <div class="col">
+        <button class="btn bg-pollen-dark-blue btn-md mt-1 ms-3" onclick="clearLog()" id="clearLogButton" hidden="true">Clear Logs</button>  
+      </div>
     </div>
 </div>
 
