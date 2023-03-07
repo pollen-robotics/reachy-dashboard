@@ -4,14 +4,13 @@ import json
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
-from reachy_controllers.joint_state_controller import get_reachy_model 
+from reachy_controllers.joint_state_controller import get_reachy_model
 
 import tools.network_tools as network_tools
 import tools.debug_tools as debug_tools
 import tools.service_app_tools as service_app_tools
 import tools.dashboard_tools as dashboard_tools
 
-import time
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -224,7 +223,7 @@ async def change_compliance():
     reachy_dashboard.change_compliancy(
         part=part_req,
         compliance=compliance_req
-        )
+    )
     return Response(status=200)
 
 

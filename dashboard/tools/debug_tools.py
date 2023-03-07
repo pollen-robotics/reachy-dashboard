@@ -1,11 +1,8 @@
-import time
 import os
 from os import path
 
 import ast
 from datetime import datetime
-
-from subprocess import CalledProcessError, check_output
 
 import reachy_pyluos_hal
 from reachy_pyluos_hal.config import load_config

@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Dict
+from typing import Dict
 from numpy import rad2deg
 
 import grpc
@@ -9,11 +9,9 @@ from google.protobuf.empty_pb2 import Empty
 from google.protobuf.wrappers_pb2 import BoolValue, FloatValue
 
 from reachy_sdk_api import fan_pb2_grpc
-from reachy_sdk_api import joint_pb2, joint_pb2_grpc
+from reachy_sdk_api import joint_pb2_grpc
 from reachy_sdk_api.joint_pb2 import JointsCommand, JointCommand, JointId, JointsStateRequest, JointField
 from reachy_sdk.fan import Fan
-from reachy_sdk.joint import Joint
-from reachy_sdk.arm import LeftArm, RightArm
 
 
 part_to_joints = {
@@ -88,21 +86,21 @@ class ReachyDashboard:
         flat_joint_list = [joint for p in all_req_joints for joint in p]
         cmd_msg = JointsCommand(
             commands=[self._build_compliance_cmd_msg(joint, compliance) for joint in flat_joint_list]
-            )
+        )
         self.joint_stub.SendJointsCommands(cmd_msg)
 
     def _build_compliance_cmd_msg(self, joint_name, compliance):
         msg = JointCommand(
             id=JointId(name=joint_name),
             compliant=BoolValue(value=compliance),
-            )
+        )
         return msg
 
     def _build_torque_limit_cmd_msg(self, joint_name, torque_limit):
         msg = JointCommand(
             id=JointId(name=joint_name),
             torque_limit=FloatValue(value=torque_limit),
-            )
+        )
         return msg
 
     async def turn_off_smoothly(self, part: str):
@@ -111,19 +109,19 @@ class ReachyDashboard:
 
         cmd_msg = JointsCommand(
             commands=[self._build_torque_limit_cmd_msg(joint, 0) for joint in flat_joint_list]
-            )
+        )
         self.joint_stub.SendJointsCommands(cmd_msg)
 
         await asyncio.sleep(2.0)
 
         cmd_msg = JointsCommand(
             commands=[self._build_compliance_cmd_msg(joint, True) for joint in flat_joint_list]
-            )
+        )
         self.joint_stub.SendJointsCommands(cmd_msg)
 
         cmd_msg = JointsCommand(
             commands=[self._build_torque_limit_cmd_msg(joint, 100) for joint in flat_joint_list]
-            )
+        )
         self.joint_stub.SendJointsCommands(cmd_msg)
 
     def _set_part_compliance_config(self):
@@ -168,7 +166,7 @@ class ReachyDashboard:
             temperatures[part] = temp_part
 
         return temperatures
-    
+
     def get_states(self):
         states = {}
 
