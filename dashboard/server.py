@@ -4,14 +4,13 @@ import json
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
-from reachy_controllers.joint_state_controller import get_reachy_model 
+from reachy_controllers.joint_state_controller import get_reachy_model
 
 import tools.network_tools as network_tools
 import tools.debug_tools as debug_tools
-import tools.service_tools as service_tools
+import tools.service_app_tools as service_app_tools
 import tools.dashboard_tools as dashboard_tools
 
-import time
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -37,6 +36,11 @@ def wifi():
 @app.route('/service')
 def service():
     return render_template('service.html')
+
+
+@app.route('/app')
+def reachy_app():
+    return render_template('app.html')
 
 
 @app.route('/dashboard')
@@ -128,34 +132,76 @@ def get_missing_modules_bool():
 @app.route('/api/list_services')
 def list_services():
     return Response(
-        response=json.dumps(service_tools.list_services()),
+        response=json.dumps(service_app_tools.list_services_or_apps(type='service')),
         mimetype='application/json',
     )
 
 
 @app.route('/api/restart_service', methods=['POST'])
 def restart_service():
-    service_tools.restart_service(request.data.decode())
+    service_app_tools.restart_service_or_app(type='service', name=request.data.decode())
     return Response(status=200)
 
 
 @app.route('/api/stop_service', methods=['POST'])
 def stop_service():
-    service_tools.stop_service(request.data.decode())
+    service_app_tools.stop_service_or_app(type='service', name=request.data.decode())
     return Response(status=200)
 
 
 @app.route('/api/is_service_running', methods=['POST'])
 def is_service_running():
     return Response(
-        response=json.dumps(service_tools.is_service_running(request.data.decode())),
+        response=json.dumps(service_app_tools.is_service_or_app_running(type='service', name=request.data.decode())),
         mimetype='application/json',
     )
 
 
 @app.route('/api/status_service', methods=['POST'])
 def status_service():
-    return service_tools.get_service_status(request.data.decode())
+    return service_app_tools.get_service_or_app_status(type='service', name=request.data.decode())
+
+
+# App API
+@app.route('/api/list_apps')
+def list_apps():
+    return Response(
+        response=json.dumps(service_app_tools.list_services_or_apps(type='app')),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/restart_app', methods=['POST'])
+def restart_app():
+    service_app_tools.restart_service_or_app(type='app', name=request.data.decode())
+    return Response(status=200)
+
+
+@app.route('/api/stop_app', methods=['POST'])
+def stop_app():
+    service_app_tools.stop_service_or_app(type='app', name=request.data.decode())
+    return Response(status=200)
+
+
+@app.route('/api/is_app_running', methods=['POST'])
+def is_app_running():
+    return Response(
+        response=json.dumps(service_app_tools.is_service_or_app_running(type='app', name=request.data.decode())),
+        mimetype='application/json',
+    )
+
+
+@app.route('/api/status_app', methods=['POST'])
+def status_app():
+    return service_app_tools.get_service_or_app_status(type='app', name=request.data.decode())
+
+
+@app.route('/api/app_disable')
+def disable_app():
+    return Response(
+        response=json.dumps(service_app_tools.list_app_to_disable()),
+        mimetype='application/json',
+    )
 
 
 # Dashboard API
@@ -177,7 +223,7 @@ async def change_compliance():
     reachy_dashboard.change_compliancy(
         part=part_req,
         compliance=compliance_req
-        )
+    )
     return Response(status=200)
 
 

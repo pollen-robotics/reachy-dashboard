@@ -13,7 +13,7 @@
   <!-- custom CSS file -->
   <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
   <!-- custom js scripts -->
-  <script src="../assets/js/material-service-reachy.js"></script>
+  <script src="../assets/js/material-app-reachy.js"></script>
 </head>
 
 <body onload="onloadSetup()"></body>
@@ -29,26 +29,26 @@
         <a class="nav-link" href="/">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="/service">Services</a>
+        <a class="nav-link" href="/service">Services</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/wifi">Wifi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/app">Applications</a>
+        <a class="nav-link active" href="/app">Applications</a>
       </li>
     </ul>
   </div>
 </nav>
 
 <div class="container mt-5">
-    <div class="row justify-content-center" id="displayerServiceCards">
-        <h3>Services available</h3>    
+    <div class="row justify-content-center" id="displayerAppCards">
+        <h3>Applications available</h3>    
     </div>
     <div class="row progress-row" hidden="true" id="progressBarContainer">
-      <p id="restartServiceName"></p>
+      <p id="restartAppName"></p>
       <div class="progress mt-0">
-        <div class="progress-bar bg-pollen-dark-blue" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="serviceProgressBar"></div>
+        <div class="progress-bar bg-pollen-dark-blue" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="appProgressBar"></div>
       </div>
     </div>
     <div class="row mt-5 justify-content-center">
@@ -62,7 +62,7 @@
 
 <script>
   function onloadSetup() {
-    makeAllServiceCards();
+    makeAllAppCards();
     getRobotConfig();
   }
 </script>

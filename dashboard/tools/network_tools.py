@@ -10,10 +10,10 @@ from serial.serialutil import SerialException
 
 class NetworkTools:
     def __init__(
-        self,
-        port: str = '/dev/arduino',
-        baudrate: int = 9600,
-        timeout: float = 0.01) -> None:
+            self,
+            port: str = '/dev/arduino',
+            baudrate: int = 9600,
+            timeout: float = 0.01) -> None:
 
         try:
             self.ser_ip_display = Serial(port=port, baudrate=baudrate, timeout=timeout)
@@ -25,7 +25,7 @@ class NetworkTools:
     def display_ip(self, ip: str):
         """Display Reachy's IP address on LCD screen."""
         try:
-            self.ser_ip_display.write(bytes('<'+ip+'>\n', 'utf8'))
+            self.ser_ip_display.write(bytes('<' + ip + '>\n', 'utf8'))
         except:
             pass
 
@@ -128,7 +128,7 @@ class NetworkTools:
         ip_dic = {
             'Hotspot': '10.42.0.1',
             'None': [],
-            'Wifi': stdout[[i for (i, p) in enumerate(stdout) if p == 'wlp0s20f3:'][0]+5],
+            'Wifi': stdout[[i for (i, p) in enumerate(stdout) if p == 'wlp0s20f3:'][0] + 5],
             'Ethernet': stdout[5]
         }
         return ip_dic[connection_mode]
@@ -168,7 +168,7 @@ class NetworkTools:
 
         try:
             check_output(['nmcli', 'connection', 'add', 'type', 'wifi', 'ifname', 'wlp0s20f3', 'ssid', ssid, 'con-name', ssid,
-                '+802-11-wireless-security.key-mgmt', 'WPA-PSK', '+802-11-wireless-security.psk', password])
+                          '+802-11-wireless-security.key-mgmt', 'WPA-PSK', '+802-11-wireless-security.psk', password])
         except CalledProcessError:
             run(['nmcli', 'con', 'delete', ssid])
             self.set_hotspot_state('on')
