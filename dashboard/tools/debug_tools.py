@@ -11,7 +11,7 @@ import reachy_pyluos_hal
 from reachy_pyluos_hal.config import load_config
 from reachy_controllers.joint_state_controller import get_reachy_model
 
-from tools.service_tools import is_service_running
+from tools.service_app_tools import is_service_or_app_running
 
 
 ros_log_path = path.expanduser('~') + '/.ros/log'
@@ -127,7 +127,7 @@ def get_required_modules(empty_values: bool = False):
 
 
 def get_missing_modules():
-    if is_service_running('reachy_sdk_server') == 'stopped':
+    if is_service_or_app_running(type='service', name='reachy_sdk_server') == 'stopped':
         return get_required_modules(empty_values=False)
 
     with open(get_latest_log_folders() + '/launch.log') as log_file:
