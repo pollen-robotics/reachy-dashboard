@@ -7,8 +7,8 @@ Manages the access point and wifi connection of Reachy version 2021 equipped wit
 Clone the repo and install the python dependencies. You can do this in a [virtual environment](https://pollen-robotics.notion.site/Install-virtualenvwrapper-on-Ubuntu20-04-6ab4212c7300426abfdd39856e26efdc).
 ```bash
 cd ~/dev
-git clone https://github.com/pollen-robotics/RAP-2021.git
-cd RAP-2021
+git clone https://github.com/pollen-robotics/reachy-dashboard.git
+cd reachy-dashboard
 pip3 install -e .
 ```
 Create a hotspot connection.
@@ -17,9 +17,9 @@ nmcli dev wifi hotspot ifname wlp0s20f3 con-name Reachy-AP ssid Reachy-AP passwo
 ```
 
 ## Accessing the dashboard
-To start RAP:
+To start the dashboard:
 ```bash
-cd ~/dev/RAP-2021/dashboard
+cd ~/dev/reachy-dashboard/dashboard
 python3 server.py
 ```
 After that, the dashboard can be accessed locally at http://127.0.0.1:3972 or from any device connected on the same as network as Reachy
