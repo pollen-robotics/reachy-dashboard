@@ -7,11 +7,18 @@ here = path.abspath(path.dirname(__file__))
 
 
 setup(
-    name='reachy_access_point',
+    name='reachy_dashboard',
     version='0.1',
     packages=find_packages(exclude=['tests']),
 
-    install_requires=['flask', 'aioflask', 'pyserial', 'asgiref'],
+    install_requires=[
+        'flask',
+        'aioflask',
+        'pyserial',
+        'asgiref',
+        'reachy-sdk',
+        'reachy-utils',
+        ],
 
     extra_requires={
         'test': ['pytest'],

@@ -6,7 +6,7 @@ from datetime import datetime
 
 import reachy_pyluos_hal
 from reachy_pyluos_hal.config import load_config
-from reachy_controllers.joint_state_controller import get_reachy_model
+from reachy_utils.config import get_reachy_model
 
 from tools.service_app_tools import is_service_or_app_running
 
