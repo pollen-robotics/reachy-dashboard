@@ -125,10 +125,16 @@ class NetworkTools:
         stdout, _ = process.communicate()
         stdout = [part for part in stdout.decode().split()]
 
+        wifi_interface_name = check_output(['iwgetid']).decode().split()[0]
+        try:
+            ip_wifi = stdout[[i for (i, p) in enumerate(stdout) if p == f'{wifi_interface_name}:'][0] + 5]
+        except IndexError:
+            ip_wifi = []
+
         ip_dic = {
             'Hotspot': '10.42.0.1',
             'None': [],
-            'Wifi': stdout[[i for (i, p) in enumerate(stdout) if p == 'wlp0s20f3:'][0] + 5],
+            'Wifi': ip_wifi,
             'Ethernet': stdout[5]
         }
         return ip_dic[connection_mode]
