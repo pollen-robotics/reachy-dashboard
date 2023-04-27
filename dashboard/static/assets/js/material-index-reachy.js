@@ -126,7 +126,7 @@ const hideConnectionButton = () => {
     }
   }
   request.open("GET", "/api/missing_modules_bool");
-  request.send();  
+  request.send();
 }
 
 const refreshStatus = () => {
