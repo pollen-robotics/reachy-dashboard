@@ -1,9 +1,17 @@
-from reachy_utils.discovery import get_missing_motors_reachy, get_reachy_model
-from reachy_utils.config import config_to_parts
+import os
+import yaml
+
+from reachy_utils.discovery import get_missing_motors_reachy, get_reachy_model, robot_config_to_parts
+
+
+_latest_discovery_file = os.path.expanduser("~/.reachy-latest-discovery.yaml")
 
 
 def get_missing_modules_names():
-    return get_missing_motors_reachy()
+    with open(_latest_discovery_file) as f:
+        missing_motors = yaml.load(f, Loader=yaml.FullLoader)
+        f.close()
+        return missing_motors
 
 
 def get_required_modules():
@@ -39,7 +47,7 @@ def get_required_modules():
         }
     }
 
-    for part in config_to_parts[reachy_model]:
+    for part in robot_config_to_parts[reachy_model]:
         required_modules[part] = full_kit_modules[part]
 
     return required_modules
@@ -49,7 +57,7 @@ def are_missing_modules():
     required = get_required_modules()
     required_len = [len(required[part]) for part in required]
 
-    missing = get_missing_motors_reachy()
+    missing = get_missing_modules_names()
     missing_len = [len(missing[part]) for part in missing]
 
     if required_len == missing_len:
