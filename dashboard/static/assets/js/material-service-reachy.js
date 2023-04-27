@@ -140,18 +140,6 @@ clearLog = () => {
     document.getElementById("clearLogButton").hidden = true;
 }
 
-getRobotConfig = () => {
-    const footer = document.getElementById("footer-container");
-    const request = new XMLHttpRequest();
-
-    request.onload = e => {
-        const config = JSON.parse(request.response);
-        footer.innerHTML = `Reachy configuration: ${config}`;
-    }
-    request.open("GET", "/api/get_reachy_config", true);
-    request.send();
-}
-
 updateProgressBar = (service) => {
     const progressBar = document.getElementById("serviceProgressBar");
     const progressBarContainer = document.getElementById("progressBarContainer");
