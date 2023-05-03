@@ -5,7 +5,6 @@ import json
 from flask import Flask, request, redirect, url_for, render_template, Response
 
 from reachy_utils.config import get_reachy_model, get_reachy_generation, get_reachy_serial_number
-from reachy_utils.discovery import get_missing_motors_reachy
 
 import tools.network_tools as network_tools
 import tools.service_app_tools as service_app_tools
