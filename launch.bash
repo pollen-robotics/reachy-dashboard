@@ -1,1 +1,1 @@
-/usr/bin/python3 /home/simsim/Pollen/dev/reachy-dashboard/dashboard/server.py
+/usr/bin/python3 /home/reachy/dev/reachy-dashboard/dashboard/server.py
