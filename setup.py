@@ -28,5 +28,5 @@ setup(
     author_email='contact@pollen-robotics.com',
     url='https://github.com/pollen-robotics/RAP-2021',
 
-    description="Dashboard web interface for Reachy 2021.",
+    description="Dashboard web interface for Reachy 2021 and 2023.",
 )
