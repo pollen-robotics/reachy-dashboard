@@ -125,7 +125,13 @@ class NetworkTools:
         stdout, _ = process.communicate()
         stdout = [part for part in stdout.decode().split()]
 
-        wifi_interface_name = check_output(['iwgetid']).decode().split()[0]
+        network_interfaces = check_output([
+            'nmcli', '--get-values', 'GENERAL.DEVICE,GENERAL.TYPE', 'device', 'show'
+            ]).decode().split()
+        wifi_interface_name = [
+            network_interfaces[i-1] for (i, n) in enumerate(network_interfaces) if n=='wifi'
+            ][0]
+
         try:
             ip_wifi = stdout[[i for (i, p) in enumerate(stdout) if p == f'{wifi_interface_name}:'][0] + 5]
         except IndexError:
