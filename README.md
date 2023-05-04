@@ -1,10 +1,12 @@
-# Reachy Access Point
+# Reachy Dashboard
 
-Manages the access point and wifi connection of Reachy version 2021 equipped with a NUC computer running Ubuntu 20.04. Useful to configure Reachy and connect it to a wifi network without having to plug a computer screen, mouse and keyboard...
+Web page developed to give an overview of the state of your Reachy (which motors are detected, what services are running, what are the motors temperatures…) as well as giving you the possiblity to access quickly some features (changing a robot’s part compliance for example).
+
+This tool has been thought to help you start easier with the robot and facilitate quick debugging.
 
 ## Installing RAP on Reachy
 
-Clone the repo and install the python dependencies. You can do this in a [virtual environment](https://pollen-robotics.notion.site/Install-virtualenvwrapper-on-Ubuntu20-04-6ab4212c7300426abfdd39856e26efdc).
+Clone the repo and install the python dependencies.
 ```bash
 cd ~/dev
 git clone https://github.com/pollen-robotics/reachy-dashboard.git
@@ -31,7 +33,7 @@ Otherwise, Reachy's IP address can be read on the LCD displayed attached to the 
 
 ## Using the dashboard
 
-For now, the dahsboard has only one page to handle wifi connection and activate/deactivate Reachy's hotspot. More features are coming.
+Check out the [dashboard documentation page](https://docs.pollen-robotics.com/dashboard/introduction/introduction/) to learn what you can do with it!
 
 ## Display Reachy's IP address
 

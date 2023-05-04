@@ -4,13 +4,21 @@ import json
 
 from flask import Flask, request, redirect, url_for, render_template, Response
 
-from reachy_controllers.joint_state_controller import get_reachy_model
+from reachy_utils.config import get_reachy_model, get_reachy_generation, get_reachy_serial_number
 
 import tools.network_tools as network_tools
-import tools.debug_tools as debug_tools
 import tools.service_app_tools as service_app_tools
 import tools.dashboard_tools as dashboard_tools
 
+reachy_generation = get_reachy_generation()
+
+if reachy_generation == 2021:
+    import tools.debug_tools_2021 as debug_tools
+elif reachy_generation == 2023:
+    import tools.debug_tools_2023 as debug_tools
+else:
+    print("Could not get Reachy's generation in configuration file.")
+    exit()
 
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
@@ -261,10 +269,13 @@ def get_states():
     )
 
 
-@app.route('/api/get_reachy_config')
-def get_config():
+@app.route('/api/get-reachy-info')
+def get_robot_info():
     return Response(
-        response=json.dumps(get_reachy_model()),
+        response=json.dumps({
+            'model': get_reachy_model(),
+            'serial_number': get_reachy_serial_number(),
+        }),
         mimetype='application/json',
     )
 
@@ -280,14 +291,12 @@ def reconnect_load_sensor():
     return render_template('reconnect_load_sensor.html')
 
 
-@app.route('/discovery')
-def discovery():
-    return render_template('discovery.html')
-
 
 if __name__ == '__main__':
 
     # time.sleep(10.0)
+
+    print('Starting Reachy dashboard...')
 
     net_tools = network_tools.NetworkTools()
 
