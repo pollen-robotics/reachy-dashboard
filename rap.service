@@ -1,0 +1,8 @@
+[Unit]
+Description=Reachy Access Point service
+
+[Service]
+ExecStart=bash /home/reachy/dev/reachy-dashboard/launcher.bash
+
+[Install]
+WantedBy=default.target
