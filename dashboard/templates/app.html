@@ -13,6 +13,7 @@
   <!-- custom CSS file -->
   <link href="../assets/css/reachy-dashboard.css" rel="stylesheet">
   <!-- custom js scripts -->
+  <script src="../assets/js/material-common-reachy.js"></script>
   <script src="../assets/js/material-app-reachy.js"></script>
   <script src="../assets/js/material-index-reachy.js"></script>
 </head>
@@ -70,9 +71,12 @@
 
 </body>
 
-<nav class="navbar navbar-expand-sm fixed-bottom navbar-light bg-light">
-  <div class="container-fluid" id="footer-container">
-  </div>
-</nav>
+<div class="flex-container bg-light fixed-bottom" style="display: flex; justify-content: space-between;">
+  <div id="footer-container"></div>
+  <button class="btn bg-pollen-green btn-lg position-relative"
+          onclick=shutdown()>
+    <img src="../assets/svg/power.svg" />
+  </button>
+</div>
 
 </html>
