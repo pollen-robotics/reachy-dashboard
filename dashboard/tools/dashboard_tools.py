@@ -180,7 +180,12 @@ class ReachyDashboard:
 
             for (joint_id, state) in zip(res.ids, res.states):
                 state_joint = {}
-                state_joint['temperature'] = int(state.temperature.value)
+
+                try:
+                    state_joint['temperature'] = int(state.temperature.value)
+                except ValueError:
+                    state_joint['temperature'] = 0
+
                 state_joint['position'] = int(rad2deg(state.present_position.value))
                 state_part[joint_id.name] = state_joint
 
