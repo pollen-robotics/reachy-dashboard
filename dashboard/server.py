@@ -9,6 +9,7 @@ from reachy_utils.config import get_reachy_model, get_reachy_generation, get_rea
 import tools.network_tools as network_tools
 import tools.service_app_tools as service_app_tools
 import tools.dashboard_tools as dashboard_tools
+import tools.common_tools as common_tools
 
 reachy_generation = get_reachy_generation()
 
@@ -279,6 +280,12 @@ def get_robot_info():
         mimetype='application/json',
     )
 
+
+# Common tools API
+@app.route('/api/shutdown')
+def shutdown():
+    common_tools.shutdown()
+    return Response(status=200)
 
 # Helper pages
 @app.route('/reconnect_motor')
