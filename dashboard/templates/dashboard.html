@@ -17,9 +17,7 @@
   <script src="../assets/js/material-common-reachy.js"></script>
 </head>
 
-<body onload="onloadSetup()"></body>
-
-<body style="margin-bottom:10%;">
+<body style="margin-bottom:10%;" onload="onloadSetup()">
 <nav class="navbar navbar-expand-sm navbar-dark bg-pollen-green">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
@@ -33,7 +31,10 @@
         <a class="nav-link" href="/service">Services</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/wifi">Wifi</a>
+        <a class="nav-link" href="/wifi">Wified</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/motor_control">Motor Control</a> <!-- New Tab -->
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/app">Applications</a>
@@ -73,6 +74,15 @@
           </div>
         </div>
     </div>
+
+    <!-- New Motor Control Section -->
+    <div class="row mt-5">
+      <h3>Motor Control</h3>
+        <div class="col-sm-6 text-center">
+          <select class="form-select form-select-sm" name="motorForm" id="motorSelecter"></select>
+          <div class="row mt-3" id="sliderContainer"></div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -85,14 +95,12 @@
   }
 </script>
 
-</body>
-
 <div class="flex-container bg-light fixed-bottom" style="display: flex; justify-content: space-between;">
   <div id="footer-container"></div>
-  <button class="btn bg-pollen-green btn-lg position-relative"
-          onclick=shutdown()>
+  <button class="btn bg-pollen-green btn-lg position-relative" onclick="shutdown()">
     <img src="../assets/svg/power.svg" />
   </button>
 </div>
 
+</body>
 </html>
